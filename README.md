@@ -3,7 +3,8 @@
 Robot differential drive kustom di **Webots** yang menjelajahi arena 3 × 3 m berisi **12 obstacle** tanpa menabrak.
 Sensor utama **Lidar 360°**, dibantu **3 sensor ultrasonik** sebagai lapisan safety dan **encoder roda** untuk odometri heading.
 
-📄 **Laporan lengkap (PDF):** [`docs/Laporan_Obstacle_Avoidance_B401.pdf`](docs/Laporan_Obstacle_Avoidance_B401.pdf)
+📄 **Laporan lengkap (PDF):** [`docs/Laporan_Obstacle_Avoidance_B401.pdf`](docs/Laporan_Obstacle_Avoidance_B401.pdf)  
+🖥️ **Slide presentasi (PDF):** [`slides/Presentasi_Obstacle_Avoidance_B401.pdf`](slides/Presentasi_Obstacle_Avoidance_B401.pdf) (sumber: `slides/slides.html`, render: `python3 slides/buat_slide.py`)
 
 ![Arena](docs/images/overview.jpg)
 
