@@ -4,3 +4,4 @@ __pycache__/
 .wbproj
 worlds/.*.wbproj
 worlds/.*.jpg
+slides/_render.html
