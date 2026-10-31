@@ -12,4 +12,5 @@ WEBOTS="${WEBOTS:-$(command -v webots || echo "$HOME/opt/webots/webots")}"
 WPID=$!
 trap 'kill $WPID 2>/dev/null' EXIT
 sleep 4
-rviz2 -d "$ROOT/rviz/obstacle_avoidance.rviz"
+# RViz2 (Ogre/GLX) crash di Wayland native, paksa lewat XWayland
+QT_QPA_PLATFORM=xcb rviz2 -d "$ROOT/rviz/obstacle_avoidance.rviz"
