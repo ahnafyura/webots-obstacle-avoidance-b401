@@ -1,0 +1,451 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+
+WorldInfo {
+  info [
+    "Tugas Pelatihan Lab B401 - Robot Obstacle Avoidance"
+    "Robot differential drive kustom dengan Lidar 360 derajat + 3 sensor ultrasonik"
+  ]
+  title "B401 Obstacle Avoidance"
+  basicTimeStep 16
+}
+DEF VIEW Viewpoint {
+  orientation -0.5774 0.5774 0.5774 2.0944
+  position 0 0 6.6
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+DEF ARENA RectangleArena {
+  floorSize 3 3
+  floorTileSize 0.5 0.5
+  wallThickness 0.02
+  wallHeight 0.2
+}
+DEF OBSTACLES Group {
+  children [
+    Solid {
+      translation -0.6 -0.5 0.1
+      children [
+        DEF OBS1 Shape {
+          appearance PBRAppearance {
+            baseColor 0.85 0.25 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.3 0.3 0.2
+          }
+        }
+      ]
+      name "kotak_1"
+      boundingObject USE OBS1
+    }
+    Solid {
+      translation 0.3 -0.9 0.1
+      rotation 0 0 1 0.5
+      children [
+        DEF OBS2 Shape {
+          appearance PBRAppearance {
+            baseColor 0.95 0.65 0.15
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.5 0.15 0.2
+          }
+        }
+      ]
+      name "dinding_miring"
+      boundingObject USE OBS2
+    }
+    Solid {
+      translation 0.8 -0.2 0.1
+      children [
+        DEF OBS3 Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.5 0.85
+            roughness 1
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.2
+            radius 0.12
+          }
+        }
+      ]
+      name "tabung_1"
+      boundingObject USE OBS3
+    }
+    Solid {
+      translation -0.15 0.25 0.1
+      children [
+        DEF OBS4 Shape {
+          appearance PBRAppearance {
+            baseColor 0.3 0.75 0.35
+            roughness 1
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.2
+            radius 0.1
+          }
+        }
+      ]
+      name "tabung_2"
+      boundingObject USE OBS4
+    }
+    Solid {
+      translation 0.45 0.45 0.1
+      children [
+        DEF OBS5 Shape {
+          appearance PBRAppearance {
+            baseColor 0.6 0.3 0.75
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.15 0.6 0.2
+          }
+        }
+      ]
+      name "dinding_tengah"
+      boundingObject USE OBS5
+    }
+    Solid {
+      translation -0.9 0.65 0.1
+      rotation 0 0 1 0.785
+      children [
+        DEF OBS6 Shape {
+          appearance PBRAppearance {
+            baseColor 0.85 0.25 0.55
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.25 0.25 0.2
+          }
+        }
+      ]
+      name "kotak_berlian"
+      boundingObject USE OBS6
+    }
+    Solid {
+      translation 1 0.95 0.1
+      children [
+        DEF OBS7 Shape {
+          appearance PBRAppearance {
+            baseColor 0.15 0.65 0.65
+            roughness 1
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.2
+            radius 0.15
+          }
+        }
+      ]
+      name "tabung_besar"
+      boundingObject USE OBS7
+    }
+    Solid {
+      translation -0.25 1.05 0.1
+      children [
+        DEF OBS8 Shape {
+          appearance PBRAppearance {
+            baseColor 0.95 0.8 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.6 0.12 0.2
+          }
+        }
+      ]
+      name "dinding_utara"
+      boundingObject USE OBS8
+    }
+    Solid {
+      translation -1.1 -0.05 0.1
+      children [
+        DEF OBS9 Shape {
+          appearance PBRAppearance {
+            baseColor 0.45 0.45 0.5
+            roughness 1
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.2
+            radius 0.08
+          }
+        }
+      ]
+      name "tiang"
+      boundingObject USE OBS9
+    }
+    Solid {
+      translation 1.05 -1.0 0.1
+      rotation 0 0 1 0.3
+      children [
+        DEF OBS10 Shape {
+          appearance PBRAppearance {
+            baseColor 0.9 0.45 0.1
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.2 0.2 0.2
+          }
+        }
+      ]
+      name "kotak_2"
+      boundingObject USE OBS10
+    }
+    Solid {
+      translation 0.1 -0.3 0.1
+      children [
+        DEF OBS11 Shape {
+          appearance PBRAppearance {
+            baseColor 0.35 0.35 0.8
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.4 0.1 0.2
+          }
+        }
+      ]
+      name "siku_L_a"
+      boundingObject USE OBS11
+    }
+    Solid {
+      translation 0.25 -0.15 0.1
+      children [
+        DEF OBS12 Shape {
+          appearance PBRAppearance {
+            baseColor 0.35 0.35 0.8
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.1 0.2 0.2
+          }
+        }
+      ]
+      name "siku_L_b"
+      boundingObject USE OBS12
+    }
+  ]
+}
+DEF ROBOT Robot {
+  translation -1.2 -1.2 0.03
+  rotation 0 0 1 0.785
+  children [
+    DEF BODY_SHAPE Pose {
+      translation 0 0 0.02
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.1 0.3 0.8
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.16 0.12 0.04
+          }
+        }
+      ]
+    }
+    Pose {
+      translation 0.075 0 0.03
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 1
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.012 0.1 0.012
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0 0.07 0
+      }
+      device [
+        RotationalMotor {
+          name "motor_kiri"
+          maxVelocity 15
+        }
+        PositionSensor {
+          name "encoder_kiri"
+        }
+      ]
+      endPoint Solid {
+        translation 0 0.07 0
+        rotation 1 0 0 1.5708
+        children [
+          DEF RODA_SHAPE Shape {
+            appearance PBRAppearance {
+              baseColor 0.1 0.1 0.1
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.02
+              radius 0.03
+            }
+          }
+        ]
+        name "roda_kiri"
+        boundingObject USE RODA_SHAPE
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0 -0.07 0
+      }
+      device [
+        RotationalMotor {
+          name "motor_kanan"
+          maxVelocity 15
+        }
+        PositionSensor {
+          name "encoder_kanan"
+        }
+      ]
+      endPoint Solid {
+        translation 0 -0.07 0
+        rotation 1 0 0 1.5708
+        children [
+          USE RODA_SHAPE
+        ]
+        name "roda_kanan"
+        boundingObject USE RODA_SHAPE
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    BallJoint {
+      jointParameters BallJointParameters {
+        anchor -0.06 0 -0.015
+      }
+      endPoint Solid {
+        translation -0.06 0 -0.015
+        children [
+          DEF KASTOR_SHAPE Shape {
+            appearance PBRAppearance {
+              baseColor 0.8 0.8 0.8
+              roughness 1
+              metalness 0
+            }
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+        name "roda_kastor"
+        boundingObject USE KASTOR_SHAPE
+        physics Physics {
+          density -1
+          mass 0.01
+        }
+      }
+    }
+    Lidar {
+      translation 0 0 0.065
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.9 0.1 0.1
+            roughness 1
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.03
+            radius 0.02
+          }
+        }
+      ]
+      name "lidar"
+      horizontalResolution 360
+      fieldOfView 6.2832
+      verticalFieldOfView 0.05
+      numberOfLayers 1
+      near 0.025
+      minRange 0.03
+      maxRange 2.5
+      projection "cylindrical"
+      noise 0.002
+    }
+    DistanceSensor {
+      translation 0.08 0.04 0.02
+      rotation 0 0 1 0.6
+      name "us_kiri"
+      lookupTable [
+        0 0 0
+        1 1 0
+      ]
+      type "sonar"
+      aperture 0.3
+    }
+    DistanceSensor {
+      translation 0.081 0 0.02
+      name "us_depan"
+      lookupTable [
+        0 0 0
+        1 1 0
+      ]
+      type "sonar"
+      aperture 0.3
+    }
+    DistanceSensor {
+      translation 0.08 -0.04 0.02
+      rotation 0 0 1 -0.6
+      name "us_kanan"
+      lookupTable [
+        0 0 0
+        1 1 0
+      ]
+      type "sonar"
+      aperture 0.3
+    }
+  ]
+  name "robot_b401"
+  boundingObject Pose {
+    translation 0 0 0.02
+    children [
+      Box {
+        size 0.16 0.12 0.04
+      }
+    ]
+  }
+  physics Physics {
+    density -1
+    mass 0.6
+    centerOfMass [
+      -0.02 0 0.01
+    ]
+  }
+  controller "obstacle_avoidance"
+}
+DEF EVALUATOR Robot {
+  name "evaluator"
+  controller "evaluator"
+  supervisor TRUE
+}

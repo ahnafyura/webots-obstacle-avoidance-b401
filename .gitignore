@@ -1,0 +1,6 @@
+logs/
+__pycache__/
+*.pyc
+.wbproj
+worlds/.*.wbproj
+worlds/.*.jpg
