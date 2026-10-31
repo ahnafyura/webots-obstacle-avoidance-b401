@@ -6,7 +6,7 @@ Robot      : differential drive kustom (body Box, 2 roda HingeJoint, 1 roda kast
              BallJoint) - struktur sama seperti modul Line Tracer.
 Sensor     : 1x Lidar 360 derajat (sensor utama)
              3x DistanceSensor tipe sonar / ultrasonik di depan (lapisan safety)
-             2x PositionSensor (encoder roda, untuk odometri heading)
+             2x PositionSensor (encoder roda) + 1x InertialUnit (IMU) untuk odometri
 
 Algoritma  : "Corridor Gap Selection" + state machine
   1. Setiap step, hasil scan Lidar diubah ke koordinat robot (x maju, y kiri).
@@ -105,6 +105,8 @@ class ObstacleAvoider:
         # --- Lidar ---
         self.lidar = self.robot.getDevice('lidar')
         self.lidar.enable(self.dt_ms)
+        # point cloud diperlukan agar 'Show Lidar Point Cloud' di Webots tampil
+        self.lidar.enablePointCloud()
         self.n_rays = self.lidar.getHorizontalResolution()
         self.fov = self.lidar.getFov()
         self.max_range = self.lidar.getMaxRange()
@@ -114,6 +116,11 @@ class ObstacleAvoider:
                            for i in range(self.n_rays)]
         self.ray_cos = [math.cos(a) for a in self.ray_angles]
         self.ray_sin = [math.sin(a) for a in self.ray_angles]
+
+        # --- IMU: heading lebih akurat dari encoder (tidak terpengaruh slip roda) ---
+        self.imu = self.robot.getDevice('imu')
+        self.imu.enable(self.dt_ms)
+        self.imu_yaw0 = None
 
         # --- Ultrasonik (safety layer) ---
         self.us = {}
@@ -131,6 +138,9 @@ class ObstacleAvoider:
         self.wander_heading = 0.0        # arah jelajah global (frame odometri)
         self.wander_timer = 0.0
         self.odom_yaw = 0.0              # heading hasil odometri encoder
+        self.odom_x = 0.0                # posisi hasil odometri (frame odom)
+        self.odom_y = 0.0
+        self.chosen = (0.0, 0.0)         # (theta, jarak_bebas) terakhir, untuk RViz
         self.prev_enc = None
         self.log_timer = 0.0
         self.scan_history = []           # (waktu, scan) untuk deteksi macet
@@ -138,6 +148,16 @@ class ObstacleAvoider:
         self.time = 0.0
         self.stats = {'mundur': 0, 'macet': 0}
         random.seed(int(os.environ.get('OA_SEED', '401')))
+
+        # --- ROS 2 bridge (opsional, untuk RViz2) ---
+        self.ros = None
+        if os.environ.get('OA_ROS', '1') != '0':
+            try:
+                from ros_bridge import RosBridge
+                self.ros = RosBridge(0.065, self.n_rays, self.fov,
+                                     self.lidar.getMinRange(), self.max_range)
+            except ImportError:
+                pass                     # ROS 2 tidak di-source: jalan tanpa bridge
 
     # ------------------------------------------------------------------
     # Pengolahan sensor
@@ -223,7 +243,18 @@ class ObstacleAvoider:
         if self.prev_enc is not None:
             dl = (enc[0] - self.prev_enc[0]) * WHEEL_RADIUS
             dr = (enc[1] - self.prev_enc[1]) * WHEEL_RADIUS
-            self.odom_yaw = wrap(self.odom_yaw + (dr - dl) / WHEEL_BASE)
+            ds = (dr + dl) / 2.0
+            imu_yaw = self.imu.getRollPitchYaw()[2]
+            if imu_yaw == imu_yaw:                       # bukan NaN
+                if self.imu_yaw0 is None:
+                    self.imu_yaw0 = imu_yaw
+                new_yaw = wrap(imu_yaw - self.imu_yaw0)  # heading dari IMU
+            else:
+                new_yaw = wrap(self.odom_yaw + (dr - dl) / WHEEL_BASE)
+            mid = self.odom_yaw + wrap(new_yaw - self.odom_yaw) / 2.0
+            self.odom_x += ds * math.cos(mid)
+            self.odom_y += ds * math.sin(mid)
+            self.odom_yaw = new_yaw
         self.prev_enc = enc
 
         # arah jelajah: robot memilih arah global acak setiap beberapa detik,
@@ -263,6 +294,7 @@ class ObstacleAvoider:
                     self.set_state('PUTAR')
                 else:
                     self.prev_theta = best
+                    self.chosen = (best, best_free)
                     w = clamp(K_W * best, -W_MAX, W_MAX)
                     speed_factor = clamp((front_free - D_STOP) / (D_SLOW - D_STOP), 0.0, 1.0)
                     heading_factor = max(0.0, math.cos(best)) ** 2
@@ -293,6 +325,12 @@ class ObstacleAvoider:
                 self.set_state('JELAJAH')
 
         self.drive(v, w)
+
+        if self.ros is not None and self.state != 'JELAJAH':
+            self.chosen = (0.0, self.corridor_free(scan, 0.0, hw))
+        if self.ros is not None:
+            self.ros.publish(self.lidar.getRangeImage(), self.odom_x, self.odom_y, self.odom_yaw,
+                             v, w, self.state, self.chosen[0], self.chosen[1], hw)
 
         # telemetri ke console Webots
         self.log_timer += self.dt

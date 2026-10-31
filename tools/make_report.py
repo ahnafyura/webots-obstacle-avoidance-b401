@@ -141,11 +141,11 @@ table([
      f'Diuji 8 × 300 detik dengan total {tot_col} tabrakan.', '✔'],
     ['Bentuk robot bebas (boleh sama dengan modul)', 'Robot kustom dengan struktur seperti modul: body '
      '<i>Box</i>, 2 roda <i>HingeJoint</i> + <i>RotationalMotor</i>, dan roda kastor <i>BallJoint</i>. '
-     'Ditambah encoder, Lidar, dan sonar.', '✔'],
+     'Ditambah encoder, IMU, Lidar, dan sonar.', '✔'],
     ['Menaruh obstacle di arena, tidak hanya menghindari pinggiran arena', '12 obstacle di tengah arena: '
      'kotak, kotak miring, tabung berbagai ukuran, dinding, dan siku-L (perangkap cekung).', '✔'],
     ['Sensor bebas (Lidar, Ultrasonic, dll.)', 'Lidar 360° (360 sinar, jangkauan 2.5 m) sebagai sensor '
-     'utama, 3 sensor ultrasonik (sonar) di depan sebagai lapisan safety, dan 2 encoder roda untuk odometri.', '✔'],
+     'utama, 3 sensor ultrasonik (sonar) di depan sebagai lapisan safety, serta 2 encoder roda dan IMU untuk odometri.', '✔'],
 ], [4.0 * cm, 10.2 * cm, 2.0 * cm], 'Pemenuhan ketentuan tugas')
 
 P('1.3 Tujuan', h2)
@@ -201,7 +201,8 @@ table([
     ['Body (chassis)', 'Shape + Box', '0.16 × 0.12 × 0.04 m, massa 0.6 kg, center of mass digeser ke belakang'],
     ['Roda kiri / kanan', 'HingeJoint + RotationalMotor', 'motor_kiri / motor_kanan; r = 0.03 m, L = 0.14 m, '
      'v<sub>maks</sub> 15 rad/s'],
-    ['Encoder roda', 'PositionSensor', 'encoder_kiri / encoder_kanan, untuk odometri heading'],
+    ['Encoder roda', 'PositionSensor', 'encoder_kiri / encoder_kanan, jarak tempuh untuk odometri'],
+    ['IMU', 'InertialUnit', 'imu, arah hadap (yaw) untuk odometri, tidak terpengaruh slip roda'],
     ['Roda kastor', 'BallJoint + Sphere', 'r = 0.015 m, di x = −0.06 m'],
     ['Lidar 360°', 'Lidar (cylindrical)', 'lidar; 360 sinar, 1 layer, 0.03–2.5 m, noise 0.2%, tinggi 9.5 cm'],
     ['Ultrasonik ×3', 'DistanceSensor type "sonar"', 'us_kiri (+34°), us_depan (0°), us_kanan (−34°); '
@@ -347,13 +348,42 @@ P('6.3 Evolusi Desain', h2)
 P('Versi awal memakai bias jelajah acak dalam frame robot. Robot memang tidak menabrak, tetapi lintasannya '
   'menyatu menjadi satu lingkaran besar di sekitar kelompok obstacle tengah, dengan coverage sekitar '
   '38 %. Penyebabnya, bias yang konstan dalam frame robot membuat robot terus berbelok ke arah yang sama. '
-  'Setelah bias diubah menjadi arah global (memakai odometri encoder), coverage naik menjadi sekitar '
-  f'{avg_cov:.0f} % dan jumlah tabrakan tetap 0.')
+  'Setelah bias diubah menjadi arah global (memakai odometri), coverage naik menjadi sekitar 53-55 % '
+  'dan jumlah tabrakan tetap 0.')
+P('Perbaikan berikutnya menyangkut odometri. Saat data Lidar ditampilkan di RViz2, titik scan makin bergeser '
+  'dari posisi obstacle seiring waktu. Penyebabnya adalah drift heading dari encoder, karena roda slip saat '
+  'robot berputar di tempat. Diukur dari posisi sebenarnya, error median titik scan mencapai 5.5 cm setelah '
+  'sekitar 15 detik. Setelah heading diambil dari IMU (InertialUnit) dan encoder hanya dipakai untuk jarak '
+  'tempuh, error turun menjadi 0.4 cm pada detik ke-15 dan 1.7 cm pada detik ke-40. Uji 8 run diulang setelah '
+  f'perubahan ini dan hasilnya tetap {tot_col} tabrakan. Data pada Tabel di atas adalah hasil versi terakhir.')
+
+# ---------------------------------------------------------------------------
+# 7. Visualisasi ROS 2
+# ---------------------------------------------------------------------------
+P('7. Visualisasi di RViz2 (ROS 2)', h1)
+P('Controller dilengkapi jembatan ROS 2 opsional (<font face="DVM">ros_bridge.py</font>). Jika Webots '
+  'dijalankan dari terminal yang sudah men-<i>source</i> ROS 2 (Jazzy), controller otomatis mempublish data '
+  'berikut. Jika ROS 2 tidak tersedia, controller tetap berjalan normal tanpa bridge.')
+table([
+    ['Topic', 'Tipe pesan', 'Isi'],
+    ['/scan', 'sensor_msgs/LaserScan', 'Scan Lidar 360°. Urutan sinar Webots dibalik agar sudut naik '
+     'berlawanan jarum jam sesuai konvensi ROS (angle_min = −π + 1°).'],
+    ['/odom', 'nav_msgs/Odometry', 'Posisi dan kecepatan robot dari encoder + IMU.'],
+    ['/oa/decision', 'visualization_msgs/MarkerArray', 'Koridor dan arah yang sedang dipilih, warna sesuai state.'],
+    ['/tf, /tf_static', 'tf2', 'odom → base_link → lidar (tinggi 6.5 cm).'],
+], [3.0 * cm, 5.0 * cm, 8.2 * cm], 'Topic ROS 2 yang dipublish controller')
+P('Konvensi LaserScan diverifikasi secara numerik: titik scan ditransformasikan ke koordinat world lalu '
+  'diukur jaraknya ke permukaan obstacle terdekat. Dengan konvensi bridge, error median 0.6 cm. Jika urutan '
+  'sudut dibalik, error median menjadi 17 cm. Perintah <font face="DVM">tools/rviz.sh</font> menjalankan '
+  'Webots dan RViz2 sekaligus dengan konfigurasi siap pakai (<font face="DVM">rviz/obstacle_avoidance.rviz</font>).')
+fig('ros_scan_view.png', 'Data /scan (jejak 40 detik) dan /odom yang direkam dari robot dalam frame odom. '
+    'Dinding arena dan obstacle terbentuk jelas. Arena tampak miring 45° karena frame odom mengikuti arah '
+    'hadap awal robot.', W * 0.72)
 
 # ---------------------------------------------------------------------------
 # 7. Cara menjalankan
 # ---------------------------------------------------------------------------
-P('7. Cara Menjalankan', h1)
+P('8. Cara Menjalankan', h1)
 bullets(['Instal Webots R2025a (atau versi yang lebih baru) dan Python 3.',
          f'Clone repositori: <font face="DVM">git clone {REPO}.git</font>',
          'Di Webots, buka <font face="DVM">File → Open World…</font> lalu pilih '
@@ -362,6 +392,7 @@ bullets(['Instal Webots R2025a (atau versi yang lebih baru) dan Python 3.',
          'tabrakan, clearance, dan coverage setiap 10 detik.',
          'Aktifkan <font face="DVM">View → Optional Rendering → Show Lidar Ray Paths</font> untuk melihat '
          'sinar Lidar.',
+         'Tampilan RViz2 (butuh ROS 2 Jazzy): <font face="DVM">tools/rviz.sh</font>.',
          'Uji otomatis headless: <font face="DVM">tools/run_test.sh 180</font> (satu run) atau '
          '<font face="DVM">tools/stress_test.sh 300</font> (8 run). Grafik dibuat ulang dengan '
          '<font face="DVM">python3 tools/plot_results.py</font>.'])
@@ -377,8 +408,8 @@ codeblock('''webots-obstacle-avoidance-b401/
 # ---------------------------------------------------------------------------
 # 8. Kesimpulan
 # ---------------------------------------------------------------------------
-P('8. Kesimpulan', h1)
-bullets(['Robot differential drive kustom dengan Lidar 360° dan tiga sensor ultrasonik berhasil dibuat di '
+P('9. Kesimpulan', h1)
+bullets(['Robot differential drive kustom dengan Lidar 360°, tiga sensor ultrasonik, encoder, dan IMU berhasil dibuat di '
          'Webots dengan struktur node yang sama seperti modul pelatihan.',
          'Algoritma Corridor Gap Selection memperhitungkan lebar robot secara eksplisit, sehingga robot '
          'hanya memilih celah yang benar-benar dapat dilalui. Ditambah state machine (JELAJAH, MUNDUR, '
@@ -386,6 +417,8 @@ bullets(['Robot differential drive kustom dengan Lidar 360° dan tiga sensor ult
          f'Pengujian kuantitatif selama {tot_time / 60:.0f} menit simulasi dari 8 posisi awal menghasilkan '
          f'<b>{tot_col} tabrakan</b> dengan total jarak tempuh {tot_dist:.0f} m dan coverage rata-rata '
          f'{avg_cov:.0f} % dalam 5 menit.',
+         'Data Lidar dan odometri (encoder + IMU) dapat dipantau langsung di RViz2 melalui jembatan ROS 2, '
+         'dengan titik scan yang tepat di permukaan obstacle.',
          'Pengembangan selanjutnya: SLAM/occupancy grid untuk eksplorasi yang lebih sistematis, navigasi '
          'menuju titik tujuan (goal seeking), atau obstacle bergerak.'])
 

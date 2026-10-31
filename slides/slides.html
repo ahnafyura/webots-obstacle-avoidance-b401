@@ -53,7 +53,7 @@
       <tr><td><b>Robot obstacle avoidance</b></td><td>Jalan otonom, diuji 40 menit tanpa tabrakan</td><td class="chk">&#10003;</td></tr>
       <tr><td><b>Bentuk robot bebas</b></td><td>Robot kustom dengan struktur seperti modul: Box, 2 HingeJoint, kastor BallJoint</td><td class="chk">&#10003;</td></tr>
       <tr><td><b>Obstacle di arena</b></td><td>12 obstacle: kotak, tabung, dinding miring, siku-L</td><td class="chk">&#10003;</td></tr>
-      <tr><td><b>Sensor bebas</b></td><td>Lidar 360&deg;, 3 ultrasonik, 2 encoder roda</td><td class="chk">&#10003;</td></tr>
+      <tr><td><b>Sensor bebas</b></td><td>Lidar 360&deg;, 3 ultrasonik, 2 encoder roda, IMU</td><td class="chk">&#10003;</td></tr>
     </table>
   </div>
 </div>
@@ -78,7 +78,7 @@
       <tr><th>Bagian</th><th>Node Webots</th></tr>
       <tr><td><b>Body</b> 16&times;12&times;4 cm</td><td><code>Shape</code> + <code>Box</code></td></tr>
       <tr><td><b>Roda</b> r 3 cm, L 14 cm</td><td><code>HingeJoint</code> + <code>RotationalMotor</code></td></tr>
-      <tr><td><b>Encoder</b></td><td><code>PositionSensor</code></td></tr>
+      <tr><td><b>Encoder</b> + <b>IMU</b></td><td><code>PositionSensor</code> + <code>InertialUnit</code></td></tr>
       <tr><td><b>Kastor</b> r 1.5 cm</td><td><code>BallJoint</code> + <code>Sphere</code></td></tr>
       <tr><td><b>Lidar</b> 360 sinar</td><td><code>Lidar</code> cylindrical</td></tr>
       <tr><td><b>Ultrasonik</b> &times;3</td><td><code>DistanceSensor</code> sonar</td></tr>
@@ -93,7 +93,7 @@
   <div class="abs row" style="left:70px;right:70px;top:200px;gap:26px;align-items:stretch">
     <div class="card" style="flex:1;padding:28px;border:3px solid #c8102e"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:32px;color:#c8102e">Lidar 360&deg;</div><div class="b">sensor utama</div></div><div class="small" style="margin-top:14px">360 sinar (1 sinar per derajat), jangkauan 3 cm sampai 2.5 m. Melihat ke segala arah, termasuk ke belakang saat mundur.</div></div>
     <div class="card" style="flex:1;padding:28px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:32px">Ultrasonik &times;3</div><div class="b">lapisan safety</div></div><div class="small" style="margin-top:14px">Kiri +34&deg;, depan, kanan &minus;34&deg;. Jika terbaca kurang dari 5 cm, robot langsung mundur. Ini cadangan kalau Lidar tidak melihat obstacle.</div></div>
-    <div class="card" style="flex:1;padding:28px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:32px">Encoder</div><div class="b">odometri</div></div><div class="small" style="margin-top:14px">Menghitung arah hadap robot dari putaran roda:<br><b>&Delta;&theta; = (d<sub>R</sub> &minus; d<sub>L</sub>) / L</b><br>Dipakai untuk memilih arah jelajah.</div></div>
+    <div class="card" style="flex:1;padding:28px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:32px">Encoder + IMU</div><div class="b">odometri</div></div><div class="small" style="margin-top:14px">Encoder memberi <b>jarak tempuh</b>, IMU memberi <b>arah hadap</b> yang tidak terpengaruh roda slip. Dipakai untuk arah jelajah dan RViz2.</div></div>
   </div>
   <div class="abs warn" style="left:70px;right:70px;top:560px"><span class="tag">Kalibrasi</span><span>Urutan data Lidar dicek dulu di world. Indeks 0 = belakang, 90 = kiri, 180 = depan, 270 = kanan.</span></div>
 </div>
@@ -167,7 +167,7 @@ v = 0.28 * clamp((depan - 0.17) / (0.60 - 0.17), 0, 1) * cos(theta)**2   <span c
   <div class="h">Masalah yang ditemukan</div><div class="ul"></div>
   <div class="abs row" style="left:110px;right:110px;top:200px;gap:30px;align-items:stretch">
     <div class="card" style="flex:1;padding:30px"><div class="stage"><div class="lbl r">Versi 1</div></div><div class="small" style="margin-top:10px">Arah jelajah acak diukur <b>relatif terhadap robot</b>. Akibatnya robot terus berbelok ke arah yang sama dan hanya mengelilingi kelompok obstacle di tengah.</div><div class="big" style="margin-top:20px;text-align:center;color:#c8102e">38 %</div><div class="cap">coverage arena dalam 5 menit</div></div>
-    <div class="card" style="flex:1;padding:30px;border:3px solid #1f9d55"><div class="stage"><div class="lbl" style="background:#1f9d55">Versi 2</div></div><div class="small" style="margin-top:10px">Arah jelajah diukur <b>terhadap arena</b> (global) memakai odometri encoder. Robot berjalan lurus ke berbagai arah dan masuk ke celah-celah.</div><div class="big" style="margin-top:20px;text-align:center;color:#1f9d55">55 %</div><div class="cap">coverage arena dalam 5 menit, tetap 0 tabrakan</div></div>
+    <div class="card" style="flex:1;padding:30px;border:3px solid #1f9d55"><div class="stage"><div class="lbl" style="background:#1f9d55">Versi 2</div></div><div class="small" style="margin-top:10px">Arah jelajah diukur <b>terhadap arena</b> (global) memakai odometri. Robot berjalan lurus ke berbagai arah dan masuk ke celah-celah.</div><div class="big" style="margin-top:20px;text-align:center;color:#1f9d55">55 %</div><div class="cap">coverage arena dalam 5 menit, tetap 0 tabrakan</div></div>
   </div>
 </div>
 
@@ -201,9 +201,9 @@ v = 0.28 * clamp((depan - 0.17) / (0.60 - 0.17), 0, 1) * cos(theta)**2   <span c
   <div class="h">Hasil uji</div><div class="ul"></div>
   <div class="abs row" style="left:70px;width:700px;top:200px;gap:20px;flex-wrap:wrap;align-items:stretch">
     <div class="card stat" style="width:330px;padding:26px"><div class="big" style="color:#1f9d55">0</div><div class="lb">TABRAKAN</div></div>
-    <div class="card stat" style="width:330px;padding:26px"><div class="big">528 m</div><div class="lb">TOTAL JARAK TEMPUH</div></div>
+    <div class="card stat" style="width:330px;padding:26px"><div class="big">517 m</div><div class="lb">TOTAL JARAK TEMPUH</div></div>
     <div class="card stat" style="width:330px;padding:26px"><div class="big">40&prime;</div><div class="lb">MENIT SIMULASI (8 &times; 300 s)</div></div>
-    <div class="card stat" style="width:330px;padding:26px"><div class="big">55 %</div><div class="lb">COVERAGE RATA-RATA</div></div>
+    <div class="card stat" style="width:330px;padding:26px"><div class="big">53 %</div><div class="lb">COVERAGE RATA-RATA</div></div>
   </div>
   <div class="abs" style="left:810px;top:170px;width:540px"><img class="fig" src="../docs/images/trajectory_all.png" style="width:540px"><div class="cap">Lintasan 8 run dari posisi awal berbeda</div></div>
 </div>
@@ -236,16 +236,33 @@ state=MUNDUR  min_depan=0.12m
   </div>
 </div>
 
+<!-- 17b rviz2 -->
+<div class="slide light">
+  <div class="h">Lihat di RViz2</div><div class="ul"></div>
+  <div class="abs" style="left:70px;top:165px;width:560px"><img class="fig" src="../docs/images/ros_scan_view.png" style="width:560px"><div class="cap">Data /scan + /odom yang direkam dari robot (40 s)</div></div>
+  <div class="abs col" style="left:670px;top:175px;width:700px">
+    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;satu perintah: Webots + RViz2</div><pre>tools/rviz.sh</pre></div>
+    <div class="card" style="padding:20px 26px"><table class="tb sm">
+      <tr><th>Topic</th><th>Isi</th></tr>
+      <tr><td><code>/scan</code></td><td>LaserScan Lidar 360&deg;</td></tr>
+      <tr><td><code>/odom</code></td><td>posisi dari encoder + IMU</td></tr>
+      <tr><td><code>/oa/decision</code></td><td>koridor yang dipilih + state</td></tr>
+      <tr><td><code>/tf</code></td><td>odom &rarr; base_link &rarr; lidar</td></tr>
+    </table></div>
+    <div class="ok"><span class="tag">Akurat</span><span>Titik scan tepat di permukaan obstacle: error median 1.7 cm setelah 40 s.</span></div>
+  </div>
+</div>
+
 <!-- 18 kesimpulan -->
 <div class="slide sea">
   <img class="pill" src="assets/pill.png" alt="">
   <div class="h" style="padding-top:112px">Kesimpulan</div><div class="ul"></div>
   <div class="abs glass" style="left:110px;top:270px;width:1220px;height:420px;padding:36px 44px">
     <div class="small" style="color:#e9f1f9;line-height:1.85;font-size:22px">
-      <b>1.</b> Robot dirakit dengan struktur yang sama seperti modul. Sensornya Lidar 360&deg;, 3 ultrasonik, dan 2 encoder.<br>
+      <b>1.</b> Robot dirakit dengan struktur yang sama seperti modul. Sensornya Lidar 360&deg;, 3 ultrasonik, 2 encoder, dan IMU.<br>
       <b>2.</b> Corridor Gap Selection memperhitungkan lebar badan robot, jadi robot hanya memilih celah yang muat.<br>
       <b>3.</b> State machine (JELAJAH, MUNDUR, PUTAR) dan pendeteksi macet membuat robot bisa keluar dari sudut cekung.<br>
-      <b>4.</b> Uji 8 &times; 300 detik: <b>0 tabrakan</b>, jarak tempuh 528 m, coverage 55 %.<br>
+      <b>4.</b> Uji 8 &times; 300 detik: <b>0 tabrakan</b>, jarak tempuh 517 m, coverage 53 %. Data Lidar juga bisa dilihat di RViz2.<br>
       <b>Pengembangan:</b> peta (SLAM), navigasi menuju titik tujuan, dan obstacle yang bergerak.</div>
   </div>
 </div>

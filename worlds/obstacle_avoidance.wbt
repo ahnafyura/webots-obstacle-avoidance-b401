@@ -393,6 +393,10 @@ DEF ROBOT Robot {
       projection "cylindrical"
       noise 0.002
     }
+    InertialUnit {
+      translation 0 0 0.02
+      name "imu"
+    }
     DistanceSensor {
       translation 0.08 0.04 0.02
       rotation 0 0 1 0.6
