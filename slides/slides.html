@@ -2,44 +2,45 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Robot Obstacle Avoidance - Pelatihan Lab B401</title>
+<title>Robot Humanoid Obstacle Avoidance - Pelatihan Lab B401</title>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/deck.css">
 <style>
   .stat { text-align: center; }
-  .stat .big { font-size: 92px; }
-  .stat .lb { font-size: 18px; font-weight: 600; color: #3a4d62; margin-top: 8px; letter-spacing: .03em; }
+  .stat .big { font-size: 84px; }
+  .stat .lb { font-size: 17px; font-weight: 600; color: #3a4d62; margin-top: 8px; letter-spacing: .03em; }
   .chk { color: #1f9d55; font-weight: 800; font-size: 26px; }
-  table.tb.sm td { padding: 9px 14px; font-size: 19px; }
-  table.tb.sm th { padding: 10px 14px; font-size: 19px; }
+  table.tb.sm td { padding: 8px 12px; font-size: 18px; }
+  table.tb.sm th { padding: 9px 12px; font-size: 18px; }
+  table.tb.xs td { padding: 6px 10px; font-size: 16px; }
+  table.tb.xs th { padding: 7px 10px; font-size: 16px; }
+  .glass.dk { background: rgba(20,40,66,.72); }
 </style>
 </head>
 <body>
 
 <!-- 1 sampul -->
 <div class="slide dark">
-  <img class="pill" src="assets/pill.png" alt="">
   <div class="center">
     <div class="sub" style="font-size:24px;letter-spacing:.3em;margin-bottom:26px">Tugas Pelatihan Lab B401</div>
-    <div class="t" style="font-size:120px">Robot Obstacle<br>Avoidance</div>
+    <div class="t" style="font-size:112px">Robot Humanoid<br>Obstacle Avoidance</div>
     <div class="ul" style="width:260px;margin-top:22px"></div>
-    <div class="sub" style="margin-top:28px">Lidar 360&deg; &middot; Webots &middot; Python</div>
+    <div class="sub" style="margin-top:28px">Lidar 360&deg; di kepala &middot; Webots &middot; ROS 2</div>
     <div class="sub" style="margin-top:14px;font-size:20px;opacity:.75">Ahnaf</div>
   </div>
 </div>
 
 <!-- 2 apa yang dibuat -->
-<div class="slide sea">
-  <img class="pill" src="assets/pill.png" alt="">
-  <div class="abs glass" style="left:90px;top:170px;width:1260px;height:480px;padding:54px 60px;">
+<div class="slide dark">
+  <div class="abs glass dk" style="left:90px;top:120px;width:1260px;height:560px;padding:54px 60px;">
     <div class="t" style="font-size:52px;text-align:left">Apa yang dibuat?</div>
-    <div class="body" style="margin-top:22px;width:470px;color:#e9f1f9">Robot beroda yang <b>menjelajahi arena sendiri</b> tanpa menabrak. Ada <b>12 obstacle</b> di tengah arena, jadi tidak cukup hanya menghindari dinding pinggir.</div>
+    <div class="body" style="margin-top:22px;width:470px;color:#e9f1f9">Robot <b>humanoid</b> yang <b>berjalan dengan dua kaki</b> menjelajahi arena tanpa menabrak 12 obstacle. Lidar 360&deg; dipasang <b>di atas kepala</b>.</div>
     <div class="row" style="justify-content:flex-start;gap:12px;margin-top:30px;width:470px;flex-wrap:wrap">
-      <span class="chip b">Lidar 360&deg;</span><span class="chip r">Ultrasonik</span><span class="chip">State machine</span><span class="chip b">0 tabrakan</span>
+      <span class="chip b">25 sendi</span><span class="chip r">Gait engine</span><span class="chip">Lidar 360&deg;</span><span class="chip b">RViz2</span><span class="chip r">{{col}} tabrakan</span>
     </div>
-    <div class="abs" style="right:56px;top:60px;width:640px">
+    <div class="abs" style="right:56px;top:70px;width:640px">
       <img class="fig" src="../docs/images/overview.jpg" style="width:640px">
-      <div class="cap">Arena 3 &times; 3 m di Webots R2025a</div>
+      <div class="cap">Arena 5 &times; 5 m di Webots R2025a</div>
     </div>
   </div>
 </div>
@@ -47,13 +48,13 @@
 <!-- 3 ketentuan -->
 <div class="slide light">
   <div class="h">Ketentuan tugas</div><div class="ul"></div>
-  <div class="abs card" style="left:110px;right:110px;top:230px;padding:26px 34px">
+  <div class="abs card" style="left:90px;right:90px;top:210px;padding:26px 34px">
     <table class="tb">
       <tr><th>Ketentuan</th><th>Yang dikerjakan</th><th style="width:70px"></th></tr>
-      <tr><td><b>Robot obstacle avoidance</b></td><td>Jalan otonom, diuji 40 menit tanpa tabrakan</td><td class="chk">&#10003;</td></tr>
-      <tr><td><b>Bentuk robot bebas</b></td><td>Robot kustom dengan struktur seperti modul: Box, 2 HingeJoint, kastor BallJoint</td><td class="chk">&#10003;</td></tr>
-      <tr><td><b>Obstacle di arena</b></td><td>12 obstacle: kotak, tabung, dinding miring, siku-L</td><td class="chk">&#10003;</td></tr>
-      <tr><td><b>Sensor bebas</b></td><td>Lidar 360&deg;, 3 ultrasonik, 2 encoder roda, IMU</td><td class="chk">&#10003;</td></tr>
+      <tr><td><b>Robot obstacle avoidance</b></td><td>Diuji {{runs}} kali &times; 10 menit: {{col}} tabrakan, {{fall}} kali jatuh</td><td class="chk">&#10003;</td></tr>
+      <tr><td><b>Bentuk robot bebas</b></td><td>Humanoid NAO 25 sendi, digerakkan gait engine buatan sendiri</td><td class="chk">&#10003;</td></tr>
+      <tr><td><b>Obstacle di arena</b></td><td>12 obstacle 0.8 m: kotak, tabung, dinding miring, siku-L</td><td class="chk">&#10003;</td></tr>
+      <tr><td><b>Sensor bebas</b></td><td>Lidar di kepala, sonar, IMU, gyro, accelerometer, GPS, FSR kaki, kamera</td><td class="chk">&#10003;</td></tr>
     </table>
   </div>
 </div>
@@ -62,214 +63,283 @@
 <div class="slide light">
   <div class="h">Alur presentasi</div><div class="ul"></div>
   <div class="abs row" style="left:70px;right:70px;top:250px;gap:26px;align-items:stretch">
-    <div class="card" style="flex:1;padding:34px 26px;text-align:center"><div class="num">01</div><div class="node" style="border:0;padding:6px 0"><div class="a" style="font-size:36px">Robot</div><div class="b" style="font-size:20px">body, roda, sensor</div></div></div>
-    <div class="card" style="flex:1;padding:34px 26px;text-align:center"><div class="num">02</div><div class="node" style="border:0;padding:6px 0"><div class="a" style="font-size:36px">Arena</div><div class="b" style="font-size:20px">12 obstacle</div></div></div>
-    <div class="card" style="flex:1;padding:34px 26px;text-align:center"><div class="num">03</div><div class="node" style="border:0;padding:6px 0"><div class="a" style="font-size:36px">Algoritma</div><div class="b" style="font-size:20px">koridor + state machine</div></div></div>
-    <div class="card" style="flex:1;padding:34px 26px;text-align:center"><div class="num red">04</div><div class="node" style="border:0;padding:6px 0"><div class="a" style="font-size:36px">Hasil</div><div class="b" style="font-size:20px">uji 8 run, demo</div></div></div>
+    <div class="card" style="flex:1;padding:34px 26px;text-align:center"><div class="num">01</div><div class="node" style="border:0;padding:6px 0"><div class="a" style="font-size:36px">Robot</div><div class="b" style="font-size:20px">sendi dan sensor</div></div></div>
+    <div class="card" style="flex:1;padding:34px 26px;text-align:center"><div class="num">02</div><div class="node" style="border:0;padding:6px 0"><div class="a" style="font-size:36px">Gait</div><div class="b" style="font-size:20px">membuat robot berjalan</div></div></div>
+    <div class="card" style="flex:1;padding:34px 26px;text-align:center"><div class="num">03</div><div class="node" style="border:0;padding:6px 0"><div class="a" style="font-size:36px">Navigasi</div><div class="b" style="font-size:20px">koridor + kebaruan</div></div></div>
+    <div class="card" style="flex:1;padding:34px 26px;text-align:center"><div class="num red">04</div><div class="node" style="border:0;padding:6px 0"><div class="a" style="font-size:36px">Hasil</div><div class="b" style="font-size:20px">uji, RViz2, demo</div></div></div>
   </div>
 </div>
 
 <!-- 5 robot -->
 <div class="slide light">
-  <div class="h">Desain robot</div><div class="ul"></div>
-  <div class="abs" style="left:70px;top:190px;width:640px"><img class="fig" src="../docs/images/robot_closeup.jpg" style="width:640px"><div class="cap">Body biru, Lidar merah di atas, kastor di belakang</div></div>
-  <div class="abs card" style="left:750px;top:190px;width:620px;padding:22px 28px">
+  <div class="h">Robot humanoid</div><div class="ul"></div>
+  <div class="abs" style="left:70px;top:180px;width:620px"><img class="fig" src="../docs/images/robot_closeup.jpg" style="width:620px"><div class="cap">Humanoid NAO, tinggi 57 cm. Lidar merah di atas kepala.</div></div>
+  <div class="abs card" style="left:730px;top:180px;width:640px;padding:20px 26px">
     <table class="tb sm">
-      <tr><th>Bagian</th><th>Node Webots</th></tr>
-      <tr><td><b>Body</b> 16&times;12&times;4 cm</td><td><code>Shape</code> + <code>Box</code></td></tr>
-      <tr><td><b>Roda</b> r 3 cm, L 14 cm</td><td><code>HingeJoint</code> + <code>RotationalMotor</code></td></tr>
-      <tr><td><b>Encoder</b> + <b>IMU</b></td><td><code>PositionSensor</code> + <code>InertialUnit</code></td></tr>
-      <tr><td><b>Kastor</b> r 1.5 cm</td><td><code>BallJoint</code> + <code>Sphere</code></td></tr>
-      <tr><td><b>Lidar</b> 360 sinar</td><td><code>Lidar</code> cylindrical</td></tr>
-      <tr><td><b>Ultrasonik</b> &times;3</td><td><code>DistanceSensor</code> sonar</td></tr>
+      <tr><th>Bagian</th><th>Sendi</th></tr>
+      <tr><td><b>Kaki</b> (12)</td><td>HipYawPitch, HipRoll, HipPitch, Knee, AnklePitch, AnkleRoll</td></tr>
+      <tr><td><b>Lengan</b> (8)</td><td>ShoulderPitch/Roll, ElbowYaw/Roll</td></tr>
+      <tr><td><b>Kepala</b> (2)</td><td>HeadYaw, HeadPitch (ditahan agar Lidar datar)</td></tr>
     </table>
   </div>
-  <div class="abs ok" style="left:750px;top:610px;width:620px"><span class="tag">Sama modul</span><span>Cara merakitnya sama seperti line tracer. Sensor IR diganti sensor jarak.</span></div>
+  <div class="abs ok" style="left:730px;top:470px;width:640px"><span class="tag">Kenapa sulit</span><span>Harus seimbang di tiap langkah, tidak bisa belok atau berhenti seketika.</span></div>
 </div>
 
 <!-- 6 sensor -->
 <div class="slide light">
-  <div class="h">Tiga lapis sensor</div><div class="ul"></div>
-  <div class="abs row" style="left:70px;right:70px;top:200px;gap:26px;align-items:stretch">
-    <div class="card" style="flex:1;padding:28px;border:3px solid #c8102e"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:32px;color:#c8102e">Lidar 360&deg;</div><div class="b">sensor utama</div></div><div class="small" style="margin-top:14px">360 sinar (1 sinar per derajat), jangkauan 3 cm sampai 2.5 m. Melihat ke segala arah, termasuk ke belakang saat mundur.</div></div>
-    <div class="card" style="flex:1;padding:28px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:32px">Ultrasonik &times;3</div><div class="b">lapisan safety</div></div><div class="small" style="margin-top:14px">Kiri +34&deg;, depan, kanan &minus;34&deg;. Jika terbaca kurang dari 5 cm, robot langsung mundur. Ini cadangan kalau Lidar tidak melihat obstacle.</div></div>
-    <div class="card" style="flex:1;padding:28px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:32px">Encoder + IMU</div><div class="b">odometri</div></div><div class="small" style="margin-top:14px">Encoder memberi <b>jarak tempuh</b>, IMU memberi <b>arah hadap</b> yang tidak terpengaruh roda slip. Dipakai untuk arah jelajah dan RViz2.</div></div>
+  <div class="h">Sensor</div><div class="ul"></div>
+  <div class="abs row" style="left:70px;right:70px;top:190px;gap:22px;align-items:stretch">
+    <div class="card" style="flex:1;padding:24px;border:3px solid #c8102e"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:28px;color:#c8102e">Lidar 360&deg;</div><div class="b">utama, di kepala</div></div><div class="small" style="margin-top:12px">360 sinar, 0.06&ndash;4 m, tinggi 0.57 m. Melihat ke segala arah tanpa terhalang badan.</div></div>
+    <div class="card" style="flex:1;padding:24px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:28px">Sonar &times;2</div><div class="b">konfirmasi</div></div><div class="small" style="margin-top:12px">Di dada, pancaran lebar. Dipakai saat Lidar juga melihat obstacle dekat.</div></div>
+    <div class="card" style="flex:1;padding:24px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:28px">IMU</div><div class="b">gyro, accelerometer</div></div><div class="small" style="margin-top:12px">Arah hadap (yaw) dan deteksi jatuh (roll/pitch &gt; 45&deg;).</div></div>
   </div>
-  <div class="abs warn" style="left:70px;right:70px;top:560px"><span class="tag">Kalibrasi</span><span>Urutan data Lidar dicek dulu di world. Indeks 0 = belakang, 90 = kiri, 180 = depan, 270 = kanan.</span></div>
-</div>
-
-<!-- 7 arena -->
-<div class="slide light">
-  <div class="h">Arena 3 &times; 3 m</div><div class="ul"></div>
-  <div class="abs" style="left:110px;top:170px;width:520px"><img class="fig" src="../docs/images/top_view.jpg" style="width:520px"><div class="cap">Tampak atas, 12 obstacle setinggi 20 cm</div></div>
-  <div class="abs col" style="left:690px;top:180px;width:640px">
-    <div class="card" style="padding:24px 28px"><div class="small"><b>Sengaja dibuat bervariasi</b><ul class="li">
-      <li><b>Kotak</b> dan <b>kotak miring</b> (29&deg;, 45&deg;)</li>
-      <li><b>Tabung</b> r 8 sampai 15 cm, permukaannya melengkung</li>
-      <li><b>Dinding</b> panjang dan <b>celah sempit</b></li>
-      <li><b>Siku-L</b>: sudut cekung yang bisa menjebak robot</li></ul></div></div>
-    <div class="ok"><span class="tag">Tujuan</span><span>Menguji kasus sulit, bukan hanya menghindari dinding arena.</span></div>
+  <div class="abs row" style="left:70px;right:70px;top:430px;gap:22px;align-items:stretch">
+    <div class="card" style="flex:1;padding:22px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:26px">GPS</div></div><div class="small" style="margin-top:8px">Posisi untuk memori sel yang sudah dikunjungi.</div></div>
+    <div class="card" style="flex:1;padding:22px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:26px">FSR kaki</div></div><div class="small" style="margin-top:8px">Gaya tapak: kaki mana yang sedang menumpu.</div></div>
+    <div class="card" style="flex:1;padding:22px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:26px">Kamera + sendi</div></div><div class="small" style="margin-top:8px">Gambar dan sudut 24 sendi, dikirim ke RViz2.</div></div>
   </div>
 </div>
 
-<!-- 8 section algoritma -->
+<!-- 7 section gait -->
 <div class="slide dark">
-  <img class="pill" src="assets/pill.png" alt="">
   <div class="center">
-    <div class="t" style="font-size:120px">Algoritma</div>
+    <div class="t" style="font-size:120px">Gait Engine</div>
     <div class="ul" style="width:260px;margin-top:20px"></div>
-    <div class="sub" style="margin-top:28px">Corridor Gap Selection + State Machine</div>
+    <div class="sub" style="margin-top:28px">Membuat setiap sendi bergerak dengan benar</div>
   </div>
 </div>
 
-<!-- 9 koridor -->
+<!-- 8 masalah motion -->
+<div class="slide light">
+  <div class="h">Masalah pertama: robot jatuh</div><div class="ul"></div>
+  <div class="abs col" style="left:90px;top:190px;width:600px">
+    <div class="card" style="padding:24px 28px"><div class="small">Motion bawaan <b>Forwards50</b> langsung melompat ke pose lutut ditekuk 1.22 rad, padahal robot berdiri tegak.</div><div class="big" style="margin-top:14px;color:#c8102e">Jatuh di detik 1.2</div><div class="cap" style="text-align:left">pitch badan 68&deg;, terukur di simulasi</div></div>
+  </div>
+  <div class="abs col" style="left:730px;top:190px;width:620px">
+    <div class="card" style="padding:24px 28px"><div class="small"><b>Solusi: transisi halus</b>. Tiap sendi berpindah ke pose awal gerakan selama 0.4 s:</div>
+      <div class="math" style="font-size:27px;margin-top:16px"><i>s</i>(<i>u</i>) = 3<i>u</i><sup>2</sup> &minus; 2<i>u</i><sup>3</sup>, &nbsp; <i>u</i> = <i>t</i> / 0.4 s</div>
+      <div class="math" style="font-size:24px;margin-top:12px"><i>q</i>(<i>t</i>) = <i>q</i><sub>awal</sub> + (<i>q</i><sub>1</sub> &minus; <i>q</i><sub>awal</sub>) &middot; <i>s</i>(<i>u</i>)</div>
+      <div class="small" style="margin-top:12px;font-size:18px">Kecepatan sendi nol di awal dan akhir, jadi tidak ada sentakan.</div></div>
+    <div class="ok"><span class="tag">Hasil</span><span>Semua gerakan berjalan tanpa jatuh.</span></div>
+  </div>
+</div>
+
+<!-- 9 siklus & belok -->
+<div class="slide light">
+  <div class="h">Jalan terus dan belok sambil jalan</div><div class="ul"></div>
+  <div class="abs" style="left:60px;top:170px;width:700px"><img class="fig" src="../docs/images/gait_cycle.png" style="width:700px"></div>
+  <div class="abs col" style="left:790px;top:180px;width:590px">
+    <div class="card" style="padding:20px 26px"><div class="small"><b>Siklus jalan.</b> Frame 51 dan 102 di Forwards50 <b>identik</b> (selisih 0 rad), sehingga frame 51&ndash;102 diulang terus: 2 langkah, 2.04 s, +0.18 m.</div></div>
+    <div class="card" style="padding:20px 26px"><div class="small"><b>Belok sambil jalan.</b> Sendi <b>HipYawPitch</b> diberi satu pulsa 0.25 rad per siklus: dibuka saat kaki terangkat, ditutup saat kaki menapak. Hasilnya +17&deg; ke kiri atau &minus;13&deg; ke kanan per siklus.</div></div>
+    <div class="warn"><span class="tag">Diuji</span><span>Pulsa 0.4&ndash;0.5 rad membuat kaki tergelincir, jadi dipilih 0.25 rad.</span></div>
+  </div>
+</div>
+
+<!-- 10 primitif -->
+<div class="slide light">
+  <div class="h">Gerakan yang tersedia</div><div class="ul"></div>
+  <div class="abs card" style="left:150px;right:150px;top:190px;padding:22px 30px">
+    <table class="tb sm">
+      <tr><th>Gerakan</th><th>Durasi</th><th>Hasil terukur</th></tr>
+      <tr><td><b>Jalan lurus</b> (1 siklus)</td><td>2.04 s</td><td>+0.18 m</td></tr>
+      <tr><td><b>Jalan belok kiri / kanan</b></td><td>2.04 s</td><td>+0.16 m dan +17&deg; &nbsp;/&nbsp; &minus;13&deg;</td></tr>
+      <tr><td><b>Putar di tempat 10&deg; / 20&deg; / 40&deg; / 60&deg;</b></td><td>2.9 s (60&deg;: 4.5 s)</td><td>&plusmn;11&deg; / &plusmn;20.7&deg; / &plusmn;39.5&deg; / &plusmn;59.1&deg;</td></tr>
+      <tr><td><b>Putar balik</b></td><td>9.0 s</td><td>+196&deg;</td></tr>
+      <tr><td><b>Mundur / maju kecil</b></td><td>2.6 s</td><td>&minus;0.10 m / +0.10 m</td></tr>
+    </table>
+  </div>
+  <div class="abs small" style="left:0;right:0;top:600px;text-align:center;color:#3a4d62">Putar 10&deg; dan 20&deg; dibuat dengan menskalakan HipYawPitch dari putar 40&deg; sebesar 0.25 dan 0.5. Semua angka diukur di simulasi.</div>
+</div>
+
+<!-- 11 arena -->
+<div class="slide light">
+  <div class="h">Arena 5 &times; 5 m</div><div class="ul"></div>
+  <div class="abs" style="left:110px;top:160px;width:540px"><img class="fig" src="../docs/images/top_view.jpg" style="width:540px"><div class="cap">Tampak atas, 12 obstacle setinggi 0.8 m</div></div>
+  <div class="abs col" style="left:700px;top:190px;width:640px">
+    <div class="card" style="padding:24px 28px"><div class="small"><ul class="li">
+      <li>Obstacle <b>0.8 m</b>, lebih tinggi dari Lidar di kepala (0.57 m)</li>
+      <li>Kotak, kotak miring, tabung, dinding panjang</li>
+      <li><b>Siku-L</b>: sudut cekung yang bisa menjebak robot</li>
+      <li>Sebagian celah sengaja terlalu sempit untuk humanoid</li></ul></div></div>
+    <div class="ok"><span class="tag">Tujuan</span><span>Menguji kasus sulit, bukan hanya dinding arena.</span></div>
+  </div>
+</div>
+
+<!-- 12 section navigasi -->
+<div class="slide dark">
+  <div class="center">
+    <div class="t" style="font-size:120px">Navigasi</div>
+    <div class="ul" style="width:260px;margin-top:20px"></div>
+    <div class="sub" style="margin-top:28px">Koridor Lidar + eksplorasi kebaruan</div>
+  </div>
+</div>
+
+<!-- 13 koridor -->
 <div class="slide light">
   <div class="h">Pilih arah: cek koridor</div><div class="ul"></div>
-  <div class="abs" style="left:70px;top:175px;width:600px"><img class="fig" src="../docs/images/corridor_concept.png" style="width:600px"></div>
-  <div class="abs col" style="left:710px;top:180px;width:660px">
-    <div class="card" style="padding:24px 28px"><div class="small">Robot mencoba <b>61 arah</b> (&minus;150&deg; sampai +150&deg;). Tiap arah punya <b>koridor selebar badan robot + margin</b> (26 cm).<br><br>Titik Lidar yang masuk ke koridor berarti koridor terhalang. <b>Jarak bebas</b> adalah jarak ke titik terdekat di dalam koridor.</div></div>
-    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;proyeksi titik Lidar ke arah &theta;</div><pre>longi = x*cos(&theta;) + y*sin(&theta;)   <span class="c"># maju</span>
-lat   = -x*sin(&theta;) + y*cos(&theta;)  <span class="c"># samping</span>
-<span class="y">terhalang</span> jika longi &gt; 0 dan |lat| &lt; 13 cm</pre></div>
-    <div class="ok"><span class="tag">Kenapa</span><span>Celah yang lebih sempit dari badan robot tidak akan dipilih.</span></div>
+  <div class="abs" style="left:70px;top:170px;width:560px"><img class="fig" src="../docs/images/corridor_concept.png" style="width:560px"></div>
+  <div class="abs col" style="left:670px;top:180px;width:700px">
+    <div class="card" style="padding:22px 28px"><div class="small">Untuk <b>36 arah</b> (tiap 10&deg;), titik Lidar (<i>x</i>, <i>y</i>) diproyeksikan ke arah &theta;:</div>
+      <div class="math" style="font-size:25px;margin-top:12px">&#8467; = <i>x</i> cos &theta; + <i>y</i> sin &theta; &nbsp;&nbsp; <i>d</i> = &minus;<i>x</i> sin &theta; + <i>y</i> cos &theta;</div>
+      <div class="math" style="font-size:25px;margin-top:10px">bebas(&theta;) = min { &#8467; : &#8467; &gt; 0, |<i>d</i>| &lt; 0.25 m }</div></div>
+    <div class="ok"><span class="tag">Kenapa</span><span>Koridor selebar badan humanoid (2 &times; 0.25 m), jadi celah sempit tidak dipilih.</span></div>
   </div>
 </div>
 
-<!-- 10 skor dan kontrol -->
+<!-- 14 skor -->
 <div class="slide light">
-  <div class="h">Skor dan kecepatan</div><div class="ul"></div>
-  <div class="abs card" style="left:70px;right:70px;top:180px;padding:26px 34px;text-align:center">
-    <div class="big" style="font-size:40px">skor(&theta;) = bebas(&theta;) &minus; 0.15&middot;|&theta; &minus; &theta;<sub>jelajah</sub>| &minus; 0.08&middot;|&theta; &minus; &theta;<sub>lalu</sub>|</div>
+  <div class="h">Skor arah dan kebaruan</div><div class="ul"></div>
+  <div class="abs card" style="left:70px;right:70px;top:175px;padding:22px 30px">
+    <div class="math" style="font-size:29px">skor(&theta;) = min(bebas, 2)/2 + 0.6&middot;<i>K</i>(&theta;) &minus; 0.35&middot;|&theta;|/&pi; &minus; 0.25&middot;|&Delta;&psi;<sub>tujuan</sub>|/&pi;</div>
   </div>
-  <div class="abs row" style="left:70px;right:70px;top:330px;gap:24px;align-items:stretch">
-    <div class="card" style="flex:1;padding:24px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:26px">Jarak bebas</div></div><div class="small" style="margin-top:10px">Utamakan jalan yang paling lapang (maksimal dihitung sampai 1 m).</div></div>
-    <div class="card" style="flex:1;padding:24px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:26px;color:#0b5cad">Arah jelajah</div></div><div class="small" style="margin-top:10px">Arah acak yang diganti tiap 5&ndash;10 detik, supaya robot menjelajah ke seluruh arena.</div></div>
-    <div class="card" style="flex:1;padding:24px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:26px;color:#c8102e">Arah sebelumnya</div></div><div class="small" style="margin-top:10px">Mencegah robot zig-zag karena arah tujuan berubah-ubah.</div></div>
+  <div class="abs row" style="left:70px;right:70px;top:320px;gap:20px;align-items:stretch">
+    <div class="card" style="flex:1;padding:22px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:24px">Jalan lapang</div></div><div class="small" style="margin-top:10px;font-size:18px">Arah dengan jarak bebas lebih jauh lebih disukai (sampai 2 m).</div></div>
+    <div class="card" style="flex:1;padding:22px;border:3px solid #0b5cad"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:24px;color:#0b5cad">Kebaruan K</div></div><div class="small" style="margin-top:10px;font-size:18px">Rata-rata 1/(1+<i>n</i>) sel 0.25 m di arah &theta;. <i>n</i> = jumlah kunjungan. Area baru = 1.</div></div>
+    <div class="card" style="flex:1;padding:22px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:24px">Penalti belok</div></div><div class="small" style="margin-top:10px;font-size:18px">Humanoid lambat berbelok, jadi arah lurus lebih disukai.</div></div>
+    <div class="card" style="flex:1;padding:22px"><div class="node" style="border:0;padding:0;text-align:left"><div class="a" style="font-size:24px;color:#c8102e">Persistensi</div></div><div class="small" style="margin-top:10px;font-size:18px">&Delta;&psi;<sub>tujuan</sub> = beda dengan arah tujuan sebelumnya. Mencegah bolak-balik.</div></div>
   </div>
-  <div class="abs term" style="left:70px;right:70px;top:560px"><div class="bar"><i></i><i></i><i></i>&nbsp;kontrol P: lambat saat dekat obstacle</div><pre>w = clamp(2.8 * theta, -3, 3)                                    <span class="c"># rad/s</span>
-v = 0.28 * clamp((depan - 0.17) / (0.60 - 0.17), 0, 1) * cos(theta)**2   <span class="c"># m/s</span></pre></div>
+  <div class="abs small" style="left:0;right:0;top:600px;text-align:center;color:#3a4d62">Arah dengan bebas &lt; 0.85 m tidak dipertimbangkan. Pembanding <b>mode acak</b>: kebaruan diganti arah acak tiap 20 s.</div>
 </div>
 
-<!-- 11 state machine -->
+<!-- 15 state machine -->
 <div class="slide light">
-  <div class="h">State machine</div><div class="ul"></div>
-  <div class="abs" style="left:70px;top:170px;width:820px"><img class="fig" src="../docs/images/state_machine.png" style="width:820px;box-shadow:none"></div>
-  <div class="abs col" style="left:930px;top:180px;width:440px">
-    <div class="card" style="padding:20px 24px"><div class="small"><span class="chip" style="background:#1f9d55">JELAJAH</span><br>Jalan normal dengan memilih koridor terbaik.</div></div>
-    <div class="card" style="padding:20px 24px"><div class="small"><span class="chip r">MUNDUR</span><br>Ada obstacle &lt; 13 cm di depan: mundur 0.6 s sambil berbelok.</div></div>
-    <div class="card" style="padding:20px 24px"><div class="small"><span class="chip b">PUTAR</span><br>Berputar di tempat sampai depan lapang &gt; 45 cm.</div></div>
-  </div>
-  <div class="abs warn" style="left:70px;top:620px;width:820px"><span class="tag">Anti macet</span><span>Kalau scan Lidar tidak berubah selama 2 s padahal robot disuruh maju, robot dianggap tersangkut dan langsung mundur.</span></div>
-</div>
-
-<!-- 12 evolusi -->
-<div class="slide light">
-  <div class="h">Masalah yang ditemukan</div><div class="ul"></div>
-  <div class="abs row" style="left:110px;right:110px;top:200px;gap:30px;align-items:stretch">
-    <div class="card" style="flex:1;padding:30px"><div class="stage"><div class="lbl r">Versi 1</div></div><div class="small" style="margin-top:10px">Arah jelajah acak diukur <b>relatif terhadap robot</b>. Akibatnya robot terus berbelok ke arah yang sama dan hanya mengelilingi kelompok obstacle di tengah.</div><div class="big" style="margin-top:20px;text-align:center;color:#c8102e">38 %</div><div class="cap">coverage arena dalam 5 menit</div></div>
-    <div class="card" style="flex:1;padding:30px;border:3px solid #1f9d55"><div class="stage"><div class="lbl" style="background:#1f9d55">Versi 2</div></div><div class="small" style="margin-top:10px">Arah jelajah diukur <b>terhadap arena</b> (global) memakai odometri. Robot berjalan lurus ke berbagai arah dan masuk ke celah-celah.</div><div class="big" style="margin-top:20px;text-align:center;color:#1f9d55">55 %</div><div class="cap">coverage arena dalam 5 menit, tetap 0 tabrakan</div></div>
+  <div class="h">State machine dan keselamatan</div><div class="ul"></div>
+  <div class="abs" style="left:50px;top:165px;width:820px"><img class="fig" src="../docs/images/state_machine.png" style="width:820px;box-shadow:none"></div>
+  <div class="abs card" style="left:900px;top:175px;width:480px;padding:18px 22px">
+    <table class="tb xs">
+      <tr><th>Aturan</th><th>Ambang</th></tr>
+      <tr><td>Lanjut jalan</td><td>koridor &ge; 0.85 m</td></tr>
+      <tr><td>Mulai jalan</td><td>depan &ge; 0.60 m</td></tr>
+      <tr><td>Putar di tempat</td><td>semua sisi &ge; 0.33 m</td></tr>
+      <tr><td>Mundur</td><td>depan &lt; 0.30 m</td></tr>
+      <tr><td>Sonar</td><td>&lt; 0.30 m + konfirmasi Lidar</td></tr>
+      <tr><td>Terjebak</td><td>60 s dalam 0.5 m &rarr; mode lolos</td></tr>
+    </table>
   </div>
 </div>
 
-<!-- 13 section hasil -->
+<!-- 16 section hasil -->
 <div class="slide dark">
-  <img class="pill" src="assets/pill.png" alt="">
   <div class="center">
     <div class="t" style="font-size:120px">Pengujian</div>
     <div class="ul" style="width:260px;margin-top:20px"></div>
-    <div class="sub" style="margin-top:28px">Diukur otomatis, bukan hanya dilihat</div>
+    <div class="sub" style="margin-top:28px">{{runs}} uji &times; 10 menit, dinilai otomatis</div>
   </div>
 </div>
 
-<!-- 14 metode -->
+<!-- 17 metode -->
 <div class="slide light">
   <div class="h">Cara mengukur</div><div class="ul"></div>
-  <div class="abs col" style="left:110px;top:190px;width:600px">
-    <div class="card" style="padding:24px 28px"><div class="small">Di world ditambahkan robot <b>evaluator</b> (Supervisor). Evaluator hanya mengamati dan tidak mengendalikan robot.<ul class="li" style="margin-top:8px">
-      <li><b>Tabrakan</b>: titik kontak fisik robot selain dengan lantai</li>
-      <li><b>Clearance</b>: jarak robot ke obstacle terdekat</li>
-      <li><b>Coverage</b>: persentase sel 10 cm yang dikunjungi</li></ul></div></div>
+  <div class="abs col" style="left:100px;top:190px;width:610px">
+    <div class="card" style="padding:24px 28px"><div class="small">Robot <b>evaluator</b> (Supervisor) hanya mengamati:<ul class="li" style="margin-top:8px">
+      <li><b>Tabrakan</b>: kontak fisik robot di atas 3 cm (telapak kaki di lantai tidak dihitung)</li>
+      <li><b>Jatuh</b>: torso turun di bawah 0.22 m</li>
+      <li><b>Coverage</b>: persentase sel 20 cm yang dikunjungi</li></ul></div></div>
+    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;terminal</div><pre style="font-size:17px">tools/stress_test.sh 600 kebaruan
+tools/stress_test.sh 600 acak</pre></div>
   </div>
-  <div class="abs col" style="left:750px;top:190px;width:580px">
-    <div class="card" style="padding:24px 28px"><div class="small"><b>Detektornya diuji dulu</b><br>Robot yang hanya maju lurus tanpa menghindar tercatat:</div><div class="big" style="margin-top:12px;color:#c8102e">68 tabrakan</div><div class="cap" style="text-align:left">dalam 20 detik. Jadi kalau hasilnya 0, memang tidak ada tabrakan.</div></div>
-    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;terminal</div><pre>tools/stress_test.sh 300   <span class="c"># 8 posisi awal x 300 s</span></pre></div>
+  <div class="abs col" style="left:750px;top:190px;width:600px">
+    <div class="card" style="padding:24px 28px"><div class="small"><b>Detektornya diuji dulu.</b> Humanoid "buta" yang hanya berjalan lurus langsung tercatat:</div><div class="big" style="margin-top:12px;color:#c8102e">Tabrakan + jatuh</div><div class="cap" style="text-align:left">saat menabrak dinding miring. Jadi angka 0 memang berarti tidak ada tabrakan.</div></div>
+    <div class="ok"><span class="tag">Matriks</span><span>16 posisi awal &times; 2 mode &times; 10 menit</span></div>
   </div>
 </div>
 
-<!-- 15 hasil angka -->
+<!-- 18 hasil angka -->
 <div class="slide light">
   <div class="h">Hasil uji</div><div class="ul"></div>
-  <div class="abs row" style="left:70px;width:700px;top:200px;gap:20px;flex-wrap:wrap;align-items:stretch">
-    <div class="card stat" style="width:330px;padding:26px"><div class="big" style="color:#1f9d55">0</div><div class="lb">TABRAKAN</div></div>
-    <div class="card stat" style="width:330px;padding:26px"><div class="big">517 m</div><div class="lb">TOTAL JARAK TEMPUH</div></div>
-    <div class="card stat" style="width:330px;padding:26px"><div class="big">40&prime;</div><div class="lb">MENIT SIMULASI (8 &times; 300 s)</div></div>
-    <div class="card stat" style="width:330px;padding:26px"><div class="big">53 %</div><div class="lb">COVERAGE RATA-RATA</div></div>
+  <div class="abs row" style="left:110px;right:110px;top:200px;gap:24px;align-items:stretch">
+    <div class="card stat" style="flex:1;padding:28px"><div class="big" style="color:#1f9d55">{{col}}</div><div class="lb">TABRAKAN</div></div>
+    <div class="card stat" style="flex:1;padding:28px"><div class="big" style="color:#1f9d55">{{fall}}</div><div class="lb">KALI JATUH</div></div>
+    <div class="card stat" style="flex:1;padding:28px"><div class="big">{{hours}} j</div><div class="lb">SIMULASI ({{runs}} UJI)</div></div>
+    <div class="card stat" style="flex:1;padding:28px"><div class="big">{{dist_km}} km</div><div class="lb">TOTAL JARAK JALAN</div></div>
   </div>
-  <div class="abs" style="left:810px;top:170px;width:540px"><img class="fig" src="../docs/images/trajectory_all.png" style="width:540px"><div class="cap">Lintasan 8 run dari posisi awal berbeda</div></div>
+  <div class="abs row" style="left:110px;right:110px;top:440px;gap:24px;align-items:stretch">
+    <div class="card stat" style="flex:1;padding:24px"><div class="big" style="font-size:70px;color:#c8102e">{{cov_a}} %</div><div class="lb">COVERAGE MODE ACAK</div></div>
+    <div class="card stat" style="flex:1;padding:24px;border:3px solid #0b5cad"><div class="big" style="font-size:70px">{{cov_n}} %</div><div class="lb">COVERAGE MODE KEBARUAN</div></div>
+    <div class="card stat" style="flex:1;padding:24px"><div class="big" style="font-size:70px;color:#1f9d55">+{{up}} %</div><div class="lb">PENINGKATAN COVERAGE</div></div>
+  </div>
 </div>
 
-<!-- 16 tabel run -->
+<!-- 19 lintasan -->
 <div class="slide light">
-  <div class="h">Detail per run</div><div class="ul"></div>
-  <div class="abs card" style="left:70px;top:180px;width:640px;padding:18px 24px">
-    <table class="tb sm">
-      <tr><th>Run</th><th>Start</th><th>Jarak</th><th>Tabrakan</th><th>Coverage</th></tr>
-      {{run_rows}}
+  <div class="h">Kebaruan vs acak</div><div class="ul"></div>
+  <div class="abs" style="left:250px;top:160px;width:940px"><img class="fig" src="../docs/images/trajectory_compare.png" style="width:940px"><div class="cap">Lintasan 8 uji dari posisi awal yang sama. Mode kebaruan masuk ke lebih banyak celah.</div></div>
+</div>
+
+<!-- 20 coverage -->
+<div class="slide light">
+  <div class="h">Coverage naik {{up}} %</div><div class="ul"></div>
+  <div class="abs" style="left:60px;top:175px;width:640px"><img class="fig" src="../docs/images/coverage_time.png" style="width:640px"><div class="cap">Rata-rata 16 uji per mode</div></div>
+  <div class="abs" style="left:730px;top:200px;width:650px"><img class="fig" src="../docs/images/coverage_bar.png" style="width:650px"><div class="cap">Setiap uji: posisi awal sama untuk kedua mode</div></div>
+  <div class="abs ok" style="left:730px;top:520px;width:650px"><span class="tag">Adil</span><span>Aturan keselamatan sama. Bedanya hanya cara memilih arah.</span></div>
+</div>
+
+<!-- 21 masalah & solusi -->
+<div class="slide light">
+  <div class="h">Masalah yang ditemukan dari data</div><div class="ul"></div>
+  <div class="abs card" style="left:70px;right:70px;top:170px;padding:18px 24px">
+    <table class="tb xs">
+      <tr><th>Masalah</th><th>Penyebab</th><th>Solusi</th></tr>
+      <tr><td>Lengan menyenggol dinding saat berputar</td><td>Ruang putar terlalu kecil</td><td>Clearance 0.33 m, putar ke sisi lega</td></tr>
+      <tr><td>Putar kiri-kanan di sudut selama 9 menit</td><td>Target di belakang berpindah sisi</td><td>Kunci arah putar</td></tr>
+      <tr><td>Overshoot target kecil, putar bolak-balik</td><td>Putar minimum 40&deg;, lalu 20&deg;</td><td>Putar 20&deg; dan 10&deg; baru</td></tr>
+      <tr><td>Senggolan saat mulai jalan</td><td>Syarat mulai jalan terlalu longgar</td><td>Depan &ge; 0.60 m, atau 0.45 m jika samping lega</td></tr>
+      <tr><td>Maju-mundur di dekat tiang</td><td>Sonar melihat obstacle di samping</td><td>Sonar perlu konfirmasi Lidar</td></tr>
+      <tr><td>Terjebak di kantong sempit</td><td>Tidak ada jalan keluar dengan skor tinggi</td><td>Watchdog wilayah + mode lolos</td></tr>
+      <tr><td>43 % waktu habis untuk putar</td><td>Belok hanya saat diam</td><td>Belok sambil jalan sampai &plusmn;75&deg;</td></tr>
     </table>
   </div>
-  <div class="abs" style="left:750px;top:190px;width:620px"><img class="fig" src="../docs/images/clearance.png" style="width:620px"><div class="cap">Clearance selalu di atas 0 (garis merah = menyentuh)</div></div>
-  <div class="abs ok" style="left:750px;top:470px;width:620px"><span class="tag">Clearance</span><span>Minimal {{min_clear}} cm dari lingkaran pembungkus robot. Jarak body sebenarnya lebih jauh.</span></div>
 </div>
 
-<!-- 17 demo -->
+<!-- 22 rviz -->
+<div class="slide light">
+  <div class="h">Semua sensor di RViz2</div><div class="ul"></div>
+  <div class="abs" style="left:50px;top:150px;width:860px"><img class="fig" src="../docs/images/{{rviz_img}}" style="width:860px"><div class="cap">{{rviz_cap}}</div></div>
+  <div class="abs col" style="left:935px;top:160px;width:465px">
+    <div class="card" style="padding:16px 22px"><table class="tb xs">
+      <tr><th>Topic</th><th>Isi</th></tr>
+      <tr><td><code>/scan</code></td><td>Lidar 360&deg;</td></tr>
+      <tr><td><code>/sonar/left</code>, <code>/right</code></td><td>sonar dada</td></tr>
+      <tr><td><code>/imu</code></td><td>orientasi + gyro + accelerometer</td></tr>
+      <tr><td><code>/fsr/left</code>, <code>/right</code></td><td>gaya telapak kaki</td></tr>
+      <tr><td><code>/camera/image_raw</code></td><td>kamera NAO</td></tr>
+      <tr><td><code>/joint_states</code> + URDF</td><td>model humanoid bergerak</td></tr>
+      <tr><td><code>/odom</code>, <code>/oa/decision</code></td><td>lintasan, koridor, state</td></tr>
+    </table></div>
+    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;satu perintah: Webots + RViz2</div><pre style="font-size:17px">tools/rviz.sh</pre></div>
+  </div>
+</div>
+
+<!-- 23 demo -->
 <div class="slide light">
   <div class="h">Demo</div><div class="ul"></div>
-  <div class="abs" style="left:70px;top:180px;width:700px"><img class="fig" src="../docs/images/robot_avoid.jpg" style="width:700px"><div class="cap">Robot melewati celah antara tabung dan dinding</div></div>
-  <div class="abs col" style="left:810px;top:180px;width:560px">
-    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;Webots</div><pre>File &rarr; Open World
+  <div class="abs" style="left:70px;top:175px;width:700px"><img class="fig" src="../docs/images/robot_avoid.jpg" style="width:700px"><div class="cap">Humanoid berjalan di antara obstacle</div></div>
+  <div class="abs col" style="left:810px;top:175px;width:560px">
+    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;Webots</div><pre style="font-size:17px">File &rarr; Open World
 worlds/obstacle_avoidance.wbt
 &#9654; Play</pre></div>
-    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;console</div><pre style="font-size:15px">state=JELAJAH depan_bebas=0.84m
-state=MUNDUR  min_depan=0.12m
-[evaluator] tabrakan: 0</pre></div>
-    <div class="card" style="padding:16px 22px"><div class="small" style="font-size:18px">Kode lengkap dan laporan PDF:<br><b class="acc">github.com/ahnafyura/<br>webots-obstacle-avoidance-b401</b></div></div>
+    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;console</div><pre style="font-size:14px">state=JALAN_KIRI  gerak=jalan_kiri
+state=PUTAR       gerak=putar_kanan40
+[evaluator] tabrakan 0, jatuh 0</pre></div>
+    <div class="card" style="padding:14px 20px"><div class="small" style="font-size:17px">Kode, laporan PDF, dan slide:<br><b class="acc">github.com/ahnafyura/<br>webots-obstacle-avoidance-b401</b></div></div>
   </div>
 </div>
 
-<!-- 17b rviz2 -->
-<div class="slide light">
-  <div class="h">Lihat di RViz2</div><div class="ul"></div>
-  <div class="abs" style="left:70px;top:165px;width:560px"><img class="fig" src="../docs/images/ros_scan_view.png" style="width:560px"><div class="cap">Data /scan + /odom yang direkam dari robot (40 s)</div></div>
-  <div class="abs col" style="left:670px;top:175px;width:700px">
-    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;satu perintah: Webots + RViz2</div><pre>tools/rviz.sh</pre></div>
-    <div class="card" style="padding:20px 26px"><table class="tb sm">
-      <tr><th>Topic</th><th>Isi</th></tr>
-      <tr><td><code>/scan</code></td><td>LaserScan Lidar 360&deg;</td></tr>
-      <tr><td><code>/odom</code></td><td>posisi dari encoder + IMU</td></tr>
-      <tr><td><code>/oa/decision</code></td><td>koridor yang dipilih + state</td></tr>
-      <tr><td><code>/tf</code></td><td>odom &rarr; base_link &rarr; lidar</td></tr>
-    </table></div>
-    <div class="ok"><span class="tag">Akurat</span><span>Titik scan tepat di permukaan obstacle: error median 1.7 cm setelah 40 s.</span></div>
-  </div>
-</div>
-
-<!-- 18 kesimpulan -->
-<div class="slide sea">
-  <img class="pill" src="assets/pill.png" alt="">
-  <div class="h" style="padding-top:112px">Kesimpulan</div><div class="ul"></div>
-  <div class="abs glass" style="left:110px;top:270px;width:1220px;height:420px;padding:36px 44px">
-    <div class="small" style="color:#e9f1f9;line-height:1.85;font-size:22px">
-      <b>1.</b> Robot dirakit dengan struktur yang sama seperti modul. Sensornya Lidar 360&deg;, 3 ultrasonik, 2 encoder, dan IMU.<br>
-      <b>2.</b> Corridor Gap Selection memperhitungkan lebar badan robot, jadi robot hanya memilih celah yang muat.<br>
-      <b>3.</b> State machine (JELAJAH, MUNDUR, PUTAR) dan pendeteksi macet membuat robot bisa keluar dari sudut cekung.<br>
-      <b>4.</b> Uji 8 &times; 300 detik: <b>0 tabrakan</b>, jarak tempuh 517 m, coverage 53 %. Data Lidar juga bisa dilihat di RViz2.<br>
-      <b>Pengembangan:</b> peta (SLAM), navigasi menuju titik tujuan, dan obstacle yang bergerak.</div>
-  </div>
-</div>
-
-<!-- 19 penutup -->
+<!-- 24 kesimpulan -->
 <div class="slide dark">
-  <img class="pill" src="assets/pill.png" alt="">
+  <div class="h" style="padding-top:90px">Kesimpulan</div><div class="ul"></div>
+  <div class="abs glass dk" style="left:110px;top:240px;width:1220px;height:440px;padding:36px 44px">
+    <div class="small" style="color:#e9f1f9;line-height:1.85;font-size:22px">
+      <b>1.</b> Humanoid 25 sendi berjalan stabil dengan gait engine sendiri: transisi halus, siklus jalan kontinu, belok sambil jalan.<br>
+      <b>2.</b> Lidar 360&deg; di kepala + koridor selebar badan: <b>{{col}} tabrakan dan {{fall}} kali jatuh</b> dalam {{hours}} jam uji.<br>
+      <b>3.</b> Eksplorasi kebaruan menaikkan coverage dari {{cov_a}} % menjadi {{cov_n}} % (<b>+{{up}} %</b>).<br>
+      <b>4.</b> Semua sensor dan model robot dapat dipantau di RViz2.<br>
+      <b>Pengembangan:</b> lokalisasi tanpa GPS (SLAM), gait dengan umpan balik keseimbangan, obstacle bergerak.</div>
+  </div>
+</div>
+
+<!-- 25 penutup -->
+<div class="slide dark">
   <div class="center">
     <div class="t" style="font-size:150px">Terima kasih</div>
     <div class="ul" style="width:260px;margin-top:18px"></div>
@@ -280,7 +350,7 @@ state=MUNDUR  min_depan=0.12m
 <script>
   var all = document.querySelectorAll(".slide");
   all.forEach(function (s, i) {
-    var f = document.createElement("div"); f.className = "ft"; f.textContent = "Pelatihan Lab B401 · Barunastra ITS 2026/2027";
+    var f = document.createElement("div"); f.className = "ft"; f.textContent = "Pelatihan Lab B401 · Robot Humanoid Obstacle Avoidance";
     var p = document.createElement("div"); p.className = "pn"; p.textContent = (i + 1) + " / " + all.length;
     s.appendChild(f); s.appendChild(p);
   });

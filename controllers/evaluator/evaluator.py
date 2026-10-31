@@ -3,8 +3,9 @@ Controller : evaluator (Supervisor)
 
 Pengamat pasif untuk MENGUJI robot obstacle avoidance. Tidak mengendalikan robot.
   - Mendeteksi tabrakan memakai contact points milik robot (kontak selain lantai).
+  - Mendeteksi robot jatuh (ketinggian torso turun di bawah FALL_Z).
   - Menghitung jarak minimum (clearance) robot ke obstacle & dinding secara analitik.
-  - Menghitung cakupan (coverage) arena dalam grid 10 cm.
+  - Menghitung cakupan (coverage) arena dalam grid 20 cm.
   - Mencetak ringkasan setiap 10 detik ke console.
 
 Variabel lingkungan opsional (dipakai oleh tools/run_test.sh):
@@ -19,9 +20,11 @@ import os
 
 from controller import Supervisor
 
-ARENA_HALF = 1.5
-ROBOT_RADIUS = 0.10        # radius lingkaran pembungkus body robot (m)
-GRID = 0.1
+ARENA_HALF = 2.5
+ROBOT_RADIUS = 0.18        # radius lingkaran pembungkus humanoid dari atas (m)
+GRID = 0.2
+CONTACT_Z = 0.03           # kontak di atas ketinggian ini = tabrakan (telapak kaki di z ~ 0)
+FALL_Z = 0.22              # torso lebih rendah dari ini = jatuh (berdiri ~0.30 m)
 SUMMARY_PERIOD = 10.0
 
 sup = Supervisor()
@@ -35,13 +38,13 @@ robot.enableContactPointsTracking(dt_ms, True)
 start = os.environ.get('EVAL_START')
 if start:
     sx0, sy0, syaw0 = (float(v) for v in start.split(','))
-    robot.getField('translation').setSFVec3f([sx0, sy0, 0.03])
+    robot.getField('translation').setSFVec3f([sx0, sy0, 0.334])
     robot.getField('rotation').setSFRotation([0, 0, 1, syaw0])
     robot.resetPhysics()
 
 log_dir = os.environ.get('EVAL_LOG_DIR')
 duration = float(os.environ.get('EVAL_DURATION', '0') or 0)
-view_mode = os.environ.get('EVAL_VIEW', 'top')   # 'top', 'follow', atau 'oblique'
+view_mode = os.environ.get('EVAL_VIEW', 'top')   # 'top', 'follow', 'chase', atau 'oblique'
 snapshots = sorted(float(s) for s in os.environ.get('EVAL_SNAPSHOTS', '').split(',') if s.strip())
 
 # ---------------------------------------------------------------------------
@@ -94,6 +97,8 @@ for ix in range(n):
 
 visited = set()
 collisions = 0
+falls = 0
+fallen = False
 contact_steps = 0
 in_contact = False
 min_clear = 1e9
@@ -129,6 +134,7 @@ def summary():
         'waktu_s': round(t, 1),
         'jarak_tempuh_m': round(distance, 2),
         'tabrakan': collisions,
+        'jatuh': falls,
         'langkah_kontak': contact_steps,
         'clearance_min_m': round(min_clear, 3),
         'coverage_persen': round(100.0 * len(visited & free_cells) / max(1, len(free_cells)), 1),
@@ -155,7 +161,12 @@ while sup.step(dt_ms) != -1:
     visited.add((int((x + ARENA_HALF) / GRID), int((y + ARENA_HALF) / GRID)))
 
     # kontak non-lantai = tabrakan (lantai ada di z ~ 0)
-    contact = any(cp.getPoint()[2] > 0.008 for cp in robot.getContactPoints(True))
+    contact = any(cp.getPoint()[2] > CONTACT_Z for cp in robot.getContactPoints(True))
+    is_fallen = p[2] < FALL_Z
+    if is_fallen and not fallen:
+        falls += 1
+        print(f"[evaluator] JATUH pada t={t:.1f}s di ({x:.2f}, {y:.2f})", flush=True)
+    fallen = is_fallen
     if contact:
         contact_steps += 1
         if not in_contact:
@@ -166,20 +177,26 @@ while sup.step(dt_ms) != -1:
     log_timer += dt
     if log_dir and log_timer >= 0.1:
         log_timer = 0.0
-        rows.append(f"{t:.2f},{x:.4f},{y:.4f},{yaw:.4f},{c:.4f},{int(contact)}")
+        rows.append(f"{t:.2f},{x:.4f},{y:.4f},{yaw:.4f},{c:.4f},{int(contact)},{p[2]:.3f}")
 
     while snapshots and t >= snapshots[0]:
         snap_t = snapshots.pop(0)
         if log_dir:
             if view_mode == 'follow':
                 view = sup.getFromDef('VIEW')
-                cam = [x - 0.9 * math.cos(yaw), y - 0.9 * math.sin(yaw), 0.55]
+                cam = [x - 1.4 * math.cos(yaw), y - 1.4 * math.sin(yaw), 0.95]
                 view.getField('position').setSFVec3f(cam)
-                view.getField('orientation').setSFRotation(look_at(cam, [x + 0.15 * math.cos(yaw), y + 0.15 * math.sin(yaw), 0.03]))
+                view.getField('orientation').setSFRotation(look_at(cam, [x + 0.3 * math.cos(yaw), y + 0.3 * math.sin(yaw), 0.3]))
+                sup.step(dt_ms)
+            elif view_mode == 'chase':
+                view = sup.getFromDef('VIEW')
+                cam = [x - 2.0 * math.cos(yaw + 0.35), y - 2.0 * math.sin(yaw + 0.35), 1.35]
+                view.getField('position').setSFVec3f(cam)
+                view.getField('orientation').setSFRotation(look_at(cam, [x + 0.6 * math.cos(yaw), y + 0.6 * math.sin(yaw), 0.25]))
                 sup.step(dt_ms)
             elif view_mode == 'oblique':
                 view = sup.getFromDef('VIEW')
-                cam = [0.0, -3.3, 2.7]
+                cam = [0.0, -6.0, 5.6]
                 view.getField('position').setSFVec3f(cam)
                 view.getField('orientation').setSFRotation(look_at(cam, [0.0, -0.1, 0.0]))
                 sup.step(dt_ms)
@@ -197,7 +214,7 @@ result = summary()
 print(f"[evaluator] HASIL AKHIR: {result}", flush=True)
 if log_dir:
     with open(os.path.join(log_dir, 'trajectory.csv'), 'w') as f:
-        f.write('t,x,y,yaw,clearance,contact\n')
+        f.write('t,x,y,yaw,clearance,contact,z\n')
         f.write('\n'.join(rows) + '\n')
     with open(os.path.join(log_dir, 'summary.json'), 'w') as f:
         json.dump(result, f, indent=2)

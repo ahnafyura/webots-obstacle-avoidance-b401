@@ -1,90 +1,98 @@
-# Robot Obstacle Avoidance — Tugas Pelatihan Lab B401
+# Robot Humanoid Obstacle Avoidance: Tugas Pelatihan Lab B401
 
-Robot differential drive kustom di **Webots** yang menjelajahi arena 3 × 3 m berisi **12 obstacle** tanpa menabrak.
-Sensor utama **Lidar 360°**, dibantu **3 sensor ultrasonik** sebagai lapisan safety, serta **encoder roda + IMU** untuk odometri. Data Lidar bisa dilihat di **RViz2** (ROS 2).
+Humanoid **NAO (25 sendi)** di **Webots** yang berjalan dengan dua kaki menjelajahi arena 5 × 5 m berisi **12 obstacle** tanpa menabrak dan tanpa jatuh.
+Sensor utama: **Lidar 360° di atas kepala**. Sensor pendukung: sonar, IMU, gyro, accelerometer, GPS, sensor gaya kaki (FSR), kamera, dan posisi sendi. Semua sensor bisa dipantau di **RViz2**.
 
-📄 **Laporan lengkap (PDF):** [`docs/Laporan_Obstacle_Avoidance_B401.pdf`](docs/Laporan_Obstacle_Avoidance_B401.pdf)  
-🖥️ **Slide presentasi (PDF):** [`slides/Presentasi_Obstacle_Avoidance_B401.pdf`](slides/Presentasi_Obstacle_Avoidance_B401.pdf) (sumber: `slides/slides.html`, render: `python3 slides/buat_slide.py`)
+📄 **Laporan (PDF):** [`docs/Laporan_Obstacle_Avoidance_B401.pdf`](docs/Laporan_Obstacle_Avoidance_B401.pdf)
+🖥️ **Slide presentasi (PDF):** [`slides/Presentasi_Obstacle_Avoidance_B401.pdf`](slides/Presentasi_Obstacle_Avoidance_B401.pdf)
 
 ![Arena](docs/images/overview.jpg)
 
-## Hasil Uji
+## Hasil uji
 
-Uji otomatis: 8 posisi awal × 300 detik simulasi. Tabrakan dideteksi dari *contact points* physics engine oleh Supervisor evaluator.
+Uji otomatis: **16 posisi awal × 2 mode × 10 menit = 32 uji (5.3 jam simulasi)**.
 
-| Total waktu | Total jarak | **Tabrakan** | Clearance min* | Coverage rata-rata (5 menit) |
+| Mode | Tabrakan | Jatuh | Jarak total | Coverage rata-rata (min–maks) |
 |---|---|---|---|---|
-| 40 menit | 517 m | **0** | 2.3 cm | 52.7 % |
+| **Kebaruan** (dipakai) | **0** | **0** | 681 m | **42.9 %** (27.9–48.8) |
+| Acak (pembanding) | 0 | 0 | 704 m | 30.3 % (19.4–37.3) |
 
-\*Diukur terhadap lingkaran pembungkus robot (r = 10 cm), jadi jarak body robot ke obstacle sebenarnya lebih besar.
+Eksplorasi kebaruan menaikkan coverage **42 %** dengan posisi awal, durasi, dan aturan keselamatan yang sama.
 
-<p align="center"><img src="docs/images/trajectory_all.png" width="48%"> <img src="docs/images/clearance.png" width="48%"></p>
+Tabrakan dideteksi dari kontak fisik (physics engine) oleh robot evaluator (Supervisor). Detektor ini sudah divalidasi dengan humanoid "buta" yang sengaja ditabrakkan.
 
-## Ketentuan Tugas
+![Perbandingan](docs/images/trajectory_compare.png)
+
+![RViz2](docs/images/rviz2.png)
+
+## Ketentuan tugas
 
 | Ketentuan | Implementasi |
 |---|---|
-| Robot obstacle avoidance | Navigasi otonom *Corridor Gap Selection* + state machine |
-| Bentuk robot bebas (boleh sama dengan modul) | Robot kustom dengan struktur seperti modul: body Box, 2× HingeJoint + motor, kastor BallJoint |
-| Obstacle di arena, tidak hanya pinggiran | 12 obstacle: kotak, kotak miring, tabung, dinding, siku-L |
-| Sensor bebas | Lidar 360° + 3 ultrasonik (sonar) + 2 encoder + IMU |
+| Robot obstacle avoidance | Humanoid berjalan otonom, Lidar + koridor selebar badan, state machine |
+| Bentuk robot bebas | Humanoid NAO 25 sendi, digerakkan **gait engine buatan sendiri** |
+| Obstacle di arena, tidak hanya pinggiran | 12 obstacle 0.8 m: kotak, kotak miring, tabung, dinding, siku-L |
+| Sensor bebas | Lidar 360° (kepala), sonar, IMU, gyro, accelerometer, GPS, FSR, kamera |
 
-## Algoritma (singkat)
+## Cara kerja
 
-1. Scan Lidar (360 sinar) diubah ke titik (x, y) dalam frame robot.
-2. Untuk 61 kandidat arah (−150°…150°), dihitung **jarak bebas koridor** selebar robot + margin.
-3. Skor = `min(bebas, 1 m) − 0.15·|θ − θ_jelajah| − 0.08·|θ − θ_sebelumnya|`. Arah terbaik dipilih,
-   lalu `ω = 2.8·θ` dan `v` diskalakan dengan jarak bebas di depan.
-4. State machine: **JELAJAH → MUNDUR** (obstacle < 13 cm, sonar < 5 cm, atau macet) **→ PUTAR** (rotasi sampai koridor depan > 45 cm) **→ JELAJAH**.
-5. θ_jelajah adalah arah global acak yang diganti tiap 5–10 s dan dikonversi ke frame robot memakai odometri (encoder + IMU), supaya robot menjelajah dan tidak berputar di satu lintasan.
+**Gait engine** ([`gait.py`](controllers/humanoid_avoidance/gait.py)) mengendalikan setiap sendi langsung dari keyframe file `.motion`:
+- **Transisi halus** `s(u) = 3u² − 2u³` dari pose saat ini ke pose awal gerakan. Tanpa transisi ini, motion bawaan membuat robot jatuh pada detik ke-1.2.
+- **Siklus jalan kontinu**: frame 51–102 di Forwards50 identik di kedua ujungnya, jadi siklus 2 langkah (2.04 s, +0.18 m) bisa diulang terus.
+- **Belok sambil jalan**: satu pulsa 0.25 rad pada sendi HipYawPitch per siklus, menghasilkan +17° ke kiri atau −13° ke kanan per siklus.
+- **Putar 20°/40°/60°/balik, mundur, maju kecil**. Semua sudah diukur dan tidak ada yang membuat robot jatuh.
 
-## Cara Menjalankan
+**Navigasi** ([`humanoid_avoidance.py`](controllers/humanoid_avoidance/humanoid_avoidance.py)):
+1. Untuk 36 arah, hitung jarak bebas koridor selebar 2 × 0.25 m dari titik Lidar.
+2. `skor(θ) = min(bebas,2)/2 + 0.6·K(θ) − 0.35·|θ|/π − 0.25·|Δψ_tujuan|/π`, dengan K(θ) = kebaruan, yaitu rata-rata `1/(1+kunjungan)` sel grid 0.25 m ke arah θ.
+3. State machine SIAP / JALAN (lurus, kiri, kanan) / BERHENTI / PUTAR / MUNDUR / BANGUN. Dilengkapi aturan keselamatan (ruang putar 0.33 m, sonar dengan konfirmasi Lidar) dan watchdog (macet, terjebak di area sempit).
 
-1. Instal [Webots R2025a](https://cyberbotics.com) (atau versi yang lebih baru) dan Python 3.
+## Cara menjalankan
+
+1. Instal [Webots R2025a](https://cyberbotics.com) dan Python 3.
 2. `git clone https://github.com/ahnafyura/webots-obstacle-avoidance-b401.git`
-3. Di Webots: **File → Open World…** → `worlds/obstacle_avoidance.wbt` → **Play** ▶.
-4. Opsional: **View → Optional Rendering → Show Lidar Ray Paths** untuk menampilkan sinar Lidar.
+3. Webots: **File → Open World…**, pilih `worlds/obstacle_avoidance.wbt`, lalu tekan **Play** ▶.
 
-Console menampilkan telemetri robot setiap detik dan ringkasan evaluator (tabrakan, clearance, coverage) setiap 10 detik.
+Console menampilkan state robot setiap detik. Evaluator mencetak jumlah tabrakan, jatuh, dan coverage setiap 10 detik.
 
-### Lihat data Lidar di RViz2 (ROS 2)
-
-```bash
-tools/rviz.sh        # butuh ROS 2 Jazzy di /opt/ros/jazzy; menjalankan Webots + RViz2
-```
-
-Controller otomatis mempublish data berikut jika Webots dijalankan dengan environment ROS 2 (tanpa ROS 2, controller tetap jalan normal):
-
-| Topic | Tipe | Isi |
-|---|---|---|
-| `/scan` | `sensor_msgs/LaserScan` | scan Lidar 360° |
-| `/odom` | `nav_msgs/Odometry` | odometri encoder + IMU |
-| `/oa/decision` | `visualization_msgs/MarkerArray` | koridor yang dipilih + state |
-| `/tf` | tf2 | `odom → base_link → lidar` |
-
-![Data ROS 2](docs/images/ros_scan_view.png)
-
-Di Webots sendiri, point cloud Lidar bisa ditampilkan lewat **View → Optional Rendering → Show Lidar Point Cloud**.
-
-### Uji otomatis (headless, Linux)
+### Semua sensor di RViz2 (ROS 2 Jazzy)
 
 ```bash
-tools/run_test.sh 180            # 1 run, 180 s -> logs/summary.json
-tools/stress_test.sh 300         # 8 run dari posisi awal berbeda
-python3 tools/plot_results.py    # grafik -> docs/images/
-python3 tools/make_report.py     # laporan PDF -> docs/
+tools/rviz.sh     # Webots + robot_state_publisher + RViz2
 ```
 
-Variabel lingkungan: `WEBOTS` (path executable), `EVAL_START="x,y,yaw"`, `OA_SEED`, `EVAL_SNAPSHOTS="1,30"`, `EVAL_VIEW=top|follow|oblique`.
+| Topic | Isi |
+|---|---|
+| `/scan` | Lidar 360° |
+| `/sonar/left`, `/sonar/right` | sonar dada (`Range`) |
+| `/imu` | orientasi + gyro + accelerometer |
+| `/fsr/left`, `/fsr/right` | gaya telapak kaki (`WrenchStamped`) |
+| `/camera/image_raw` | kamera NAO |
+| `/joint_states` + `/robot_description` | model humanoid bergerak (URDF) |
+| `/odom`, `/tf`, `/oa/decision` | lintasan, frame, koridor, state, sel dikunjungi |
+
+URDF dibuat oleh `tools/make_urdf.py`: hasil ekspor Webots (kaki) ditambah lengan, kepala, Lidar, dan kamera, karena Hinge2Joint belum didukung oleh ekspor URDF Webots.
+
+### Uji otomatis (headless)
+
+```bash
+tools/stress_test.sh 600 kebaruan                 # 8 posisi awal x 10 menit
+tools/stress_test.sh 600 acak                     # pembanding
+STARTS_SET=2 tools/stress_test.sh 600 kebaruan    # set posisi awal kedua
+python3 tools/plot_results.py                     # grafik -> docs/images
+python3 tools/make_report.py                      # laporan PDF
+python3 slides/buat_slide.py                      # slide PDF
+```
 
 ## Struktur
 
 ```
-worlds/obstacle_avoidance.wbt        arena + obstacle + robot + evaluator
-controllers/obstacle_avoidance/      controller robot (Python)
-controllers/evaluator/               supervisor penguji (tabrakan, clearance, coverage)
-tools/                               skrip uji, grafik, generator PDF
-docs/                                laporan PDF, gambar, hasil uji
+worlds/obstacle_avoidance.wbt          arena 5x5 m + 12 obstacle + humanoid + evaluator (dibuat tools/make_world.py)
+controllers/humanoid_avoidance/        controller, gait engine, ROS 2 bridge, file motion
+controllers/evaluator/                 supervisor penguji (tabrakan, jatuh, clearance, coverage)
+rviz/                                  konfigurasi RViz2 + URDF humanoid
+tools/                                 uji otomatis, grafik, generator laporan & world & URDF
+docs/  slides/                         laporan PDF, slide PDF, gambar
 ```
 
-Catatan: urutan sinar Lidar sudah diverifikasi lewat uji di world. Indeks 0 mengarah ke belakang robot, lalu searah jarum jam (90 = kiri, 180 = depan, 270 = kanan).
+Versi sebelumnya (robot beroda differential drive) tersimpan di tag [`v1-robot-roda`](../../tree/v1-robot-roda).
