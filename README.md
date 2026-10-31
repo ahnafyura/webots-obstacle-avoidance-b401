@@ -1,7 +1,7 @@
 # Robot Obstacle Avoidance — Tugas Pelatihan Lab B401
 
 Robot differential drive kustom di **Webots** yang menjelajahi arena 3 × 3 m berisi **12 obstacle** tanpa menabrak.
-Sensor utama **Lidar 360°**, dibantu **3 sensor ultrasonik** sebagai lapisan safety dan **encoder roda** untuk odometri heading.
+Sensor utama **Lidar 360°**, dibantu **3 sensor ultrasonik** sebagai lapisan safety, serta **encoder roda + IMU** untuk odometri. Data Lidar bisa dilihat di **RViz2** (ROS 2).
 
 📄 **Laporan lengkap (PDF):** [`docs/Laporan_Obstacle_Avoidance_B401.pdf`](docs/Laporan_Obstacle_Avoidance_B401.pdf)  
 🖥️ **Slide presentasi (PDF):** [`slides/Presentasi_Obstacle_Avoidance_B401.pdf`](slides/Presentasi_Obstacle_Avoidance_B401.pdf) (sumber: `slides/slides.html`, render: `python3 slides/buat_slide.py`)
@@ -14,7 +14,7 @@ Uji otomatis: 8 posisi awal × 300 detik simulasi. Tabrakan dideteksi dari *cont
 
 | Total waktu | Total jarak | **Tabrakan** | Clearance min* | Coverage rata-rata (5 menit) |
 |---|---|---|---|---|
-| 40 menit | 528 m | **0** | 2.4 cm | 54.9 % |
+| 40 menit | 517 m | **0** | 2.3 cm | 52.7 % |
 
 \*Diukur terhadap lingkaran pembungkus robot (r = 10 cm), jadi jarak body robot ke obstacle sebenarnya lebih besar.
 
@@ -27,7 +27,7 @@ Uji otomatis: 8 posisi awal × 300 detik simulasi. Tabrakan dideteksi dari *cont
 | Robot obstacle avoidance | Navigasi otonom *Corridor Gap Selection* + state machine |
 | Bentuk robot bebas (boleh sama dengan modul) | Robot kustom dengan struktur seperti modul: body Box, 2× HingeJoint + motor, kastor BallJoint |
 | Obstacle di arena, tidak hanya pinggiran | 12 obstacle: kotak, kotak miring, tabung, dinding, siku-L |
-| Sensor bebas | Lidar 360° + 3 ultrasonik (sonar) + 2 encoder |
+| Sensor bebas | Lidar 360° + 3 ultrasonik (sonar) + 2 encoder + IMU |
 
 ## Algoritma (singkat)
 
@@ -36,7 +36,7 @@ Uji otomatis: 8 posisi awal × 300 detik simulasi. Tabrakan dideteksi dari *cont
 3. Skor = `min(bebas, 1 m) − 0.15·|θ − θ_jelajah| − 0.08·|θ − θ_sebelumnya|`. Arah terbaik dipilih,
    lalu `ω = 2.8·θ` dan `v` diskalakan dengan jarak bebas di depan.
 4. State machine: **JELAJAH → MUNDUR** (obstacle < 13 cm, sonar < 5 cm, atau macet) **→ PUTAR** (rotasi sampai koridor depan > 45 cm) **→ JELAJAH**.
-5. θ_jelajah adalah arah global acak yang diganti tiap 5–10 s dan dikonversi ke frame robot memakai odometri encoder, supaya robot menjelajah dan tidak berputar di satu lintasan.
+5. θ_jelajah adalah arah global acak yang diganti tiap 5–10 s dan dikonversi ke frame robot memakai odometri (encoder + IMU), supaya robot menjelajah dan tidak berputar di satu lintasan.
 
 ## Cara Menjalankan
 
@@ -46,6 +46,25 @@ Uji otomatis: 8 posisi awal × 300 detik simulasi. Tabrakan dideteksi dari *cont
 4. Opsional: **View → Optional Rendering → Show Lidar Ray Paths** untuk menampilkan sinar Lidar.
 
 Console menampilkan telemetri robot setiap detik dan ringkasan evaluator (tabrakan, clearance, coverage) setiap 10 detik.
+
+### Lihat data Lidar di RViz2 (ROS 2)
+
+```bash
+tools/rviz.sh        # butuh ROS 2 Jazzy di /opt/ros/jazzy; menjalankan Webots + RViz2
+```
+
+Controller otomatis mempublish data berikut jika Webots dijalankan dengan environment ROS 2 (tanpa ROS 2, controller tetap jalan normal):
+
+| Topic | Tipe | Isi |
+|---|---|---|
+| `/scan` | `sensor_msgs/LaserScan` | scan Lidar 360° |
+| `/odom` | `nav_msgs/Odometry` | odometri encoder + IMU |
+| `/oa/decision` | `visualization_msgs/MarkerArray` | koridor yang dipilih + state |
+| `/tf` | tf2 | `odom → base_link → lidar` |
+
+![Data ROS 2](docs/images/ros_scan_view.png)
+
+Di Webots sendiri, point cloud Lidar bisa ditampilkan lewat **View → Optional Rendering → Show Lidar Point Cloud**.
 
 ### Uji otomatis (headless, Linux)
 
