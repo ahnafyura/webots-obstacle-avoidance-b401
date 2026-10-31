@@ -1,0 +1,176 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Cell Size: 0.5
+      Plane Cell Count: 12
+      Color: 160; 160; 164
+      Alpha: 0.3
+      Reference Frame: <Fixed Frame>
+    - Class: rviz_default_plugins/RobotModel
+      Name: Robot humanoid (URDF + joint_states)
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_description
+        Depth: 1
+        Durability Policy: Transient Local
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Visual Enabled: true
+      Collision Enabled: false
+      Alpha: 1
+    - Class: rviz_default_plugins/LaserScan
+      Name: Lidar (jejak 60 s)
+      Enabled: true
+      Topic:
+        Value: /scan
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Decay Time: 60
+      Style: Points
+      Size (Pixels): 2
+      Color Transformer: FlatColor
+      Color: 120; 170; 255
+      Alpha: 0.5
+    - Class: rviz_default_plugins/LaserScan
+      Name: Lidar (scan sekarang)
+      Enabled: true
+      Topic:
+        Value: /scan
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Decay Time: 0
+      Style: Spheres
+      Size (m): 0.03
+      Color Transformer: FlatColor
+      Color: 255; 60; 60
+      Alpha: 1
+    - Class: rviz_default_plugins/Range
+      Name: Sonar kiri
+      Enabled: true
+      Topic:
+        Value: /sonar/left
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color: 255; 200; 0
+      Alpha: 0.12
+    - Class: rviz_default_plugins/Range
+      Name: Sonar kanan
+      Enabled: true
+      Topic:
+        Value: /sonar/right
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Color: 255; 120; 0
+      Alpha: 0.12
+    - Class: rviz_default_plugins/Wrench
+      Name: FSR kaki kiri
+      Enabled: true
+      Topic:
+        Value: /fsr/left
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Force Color: 204; 41; 204
+      Force Arrow Scale: 0.01
+      Torque Arrow Scale: 0
+      Arrow Width: 0.3
+    - Class: rviz_default_plugins/Wrench
+      Name: FSR kaki kanan
+      Enabled: true
+      Topic:
+        Value: /fsr/right
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Force Color: 120; 41; 204
+      Force Arrow Scale: 0.01
+      Torque Arrow Scale: 0
+      Arrow Width: 0.3
+    - Class: rviz_default_plugins/Axes
+      Name: IMU (orientasi badan)
+      Enabled: true
+      Reference Frame: imu_body
+      Length: 0.25
+      Radius: 0.012
+    - Class: rviz_default_plugins/Odometry
+      Name: Lintasan (odom)
+      Enabled: true
+      Topic:
+        Value: /odom
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+      Keep: 400
+      Position Tolerance: 0.08
+      Angle Tolerance: 0.5
+      Shape:
+        Value: Arrow
+        Color: 255; 200; 60
+        Alpha: 0.7
+        Shaft Length: 0.1
+        Shaft Radius: 0.008
+        Head Length: 0.04
+        Head Radius: 0.02
+      Covariance:
+        Value: false
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Keputusan + panel sensor + sel dikunjungi
+      Enabled: true
+      Topic:
+        Value: /oa/decision
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+    - Class: rviz_default_plugins/Image
+      Name: Kamera NAO
+      Enabled: true
+      Topic:
+        Value: /camera/image_raw
+        Depth: 2
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Best Effort
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: false
+  Global Options:
+    Background Color: 30; 34; 42
+    Fixed Frame: odom
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Distance: 7.5
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Pitch: 0.95
+      Yaw: -1.5708
+      Target Frame: <Fixed Frame>
+Window Geometry:
+  Height: 950
+  Width: 1500

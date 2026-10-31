@@ -1,74 +1,347 @@
-[
-  {
-    "waktu_s": 300.0,
-    "jarak_tempuh_m": 65.67,
+{
+  "kebaruan": {
+    "runs": [
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.2,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.047,
+        "coverage_persen": 44.8,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 43.3,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.023,
+        "coverage_persen": 43.3,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 43.8,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.057,
+        "coverage_persen": 42.7,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 41.1,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.028,
+        "coverage_persen": 37.6,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 43.0,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.031,
+        "coverage_persen": 46.4,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 43.0,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.031,
+        "coverage_persen": 46.1,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 41.9,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.014,
+        "coverage_persen": 47.6,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 41.9,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.038,
+        "coverage_persen": 39.7,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.9,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.033,
+        "coverage_persen": 41.5,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.2,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.054,
+        "coverage_persen": 44.5,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 39.2,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.033,
+        "coverage_persen": 27.9,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 43.4,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.031,
+        "coverage_persen": 41.8,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 43.7,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.029,
+        "coverage_persen": 48.8,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.3,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.041,
+        "coverage_persen": 43.0,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.9,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.042,
+        "coverage_persen": 42.4,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 43.8,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.03,
+        "coverage_persen": 48.5,
+        "jumlah_obstacle": 12
+      }
+    ],
+    "coverage_rata": 42.9,
+    "coverage_min": 27.9,
+    "coverage_max": 48.8,
     "tabrakan": 0,
-    "langkah_kontak": 0,
-    "clearance_min_m": 0.028,
-    "coverage_persen": 51.2,
-    "jumlah_obstacle": 12
+    "jatuh": 0,
+    "jarak_total_m": 680.6,
+    "clearance_min_m": 0.014,
+    "waktu_total_s": 9600.0
   },
-  {
-    "waktu_s": 300.0,
-    "jarak_tempuh_m": 67.22,
+  "acak": {
+    "runs": [
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.8,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.028,
+        "coverage_persen": 37.3,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 44.0,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.048,
+        "coverage_persen": 34.5,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.5,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.043,
+        "coverage_persen": 31.5,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 44.8,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.027,
+        "coverage_persen": 29.1,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.8,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.042,
+        "coverage_persen": 30.0,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 44.6,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.044,
+        "coverage_persen": 29.4,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 44.4,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.045,
+        "coverage_persen": 32.1,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 44.9,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.038,
+        "coverage_persen": 25.2,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 44.3,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.052,
+        "coverage_persen": 35.2,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 44.3,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.037,
+        "coverage_persen": 31.8,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 45.9,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.028,
+        "coverage_persen": 31.8,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 45.0,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.031,
+        "coverage_persen": 19.4,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.4,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.025,
+        "coverage_persen": 27.3,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 42.0,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.037,
+        "coverage_persen": 25.8,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 45.1,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.052,
+        "coverage_persen": 26.7,
+        "jumlah_obstacle": 12
+      },
+      {
+        "waktu_s": 600.0,
+        "jarak_tempuh_m": 44.0,
+        "tabrakan": 0,
+        "jatuh": 0,
+        "langkah_kontak": 0,
+        "clearance_min_m": 0.034,
+        "coverage_persen": 37.3,
+        "jumlah_obstacle": 12
+      }
+    ],
+    "coverage_rata": 30.3,
+    "coverage_min": 19.4,
+    "coverage_max": 37.3,
     "tabrakan": 0,
-    "langkah_kontak": 0,
-    "clearance_min_m": 0.029,
-    "coverage_persen": 51.9,
-    "jumlah_obstacle": 12
-  },
-  {
-    "waktu_s": 300.0,
-    "jarak_tempuh_m": 63.99,
-    "tabrakan": 0,
-    "langkah_kontak": 0,
+    "jatuh": 0,
+    "jarak_total_m": 703.8,
     "clearance_min_m": 0.025,
-    "coverage_persen": 51.2,
-    "jumlah_obstacle": 12
+    "waktu_total_s": 9600.0
   },
-  {
-    "waktu_s": 300.0,
-    "jarak_tempuh_m": 64.27,
-    "tabrakan": 0,
-    "langkah_kontak": 0,
-    "clearance_min_m": 0.024,
-    "coverage_persen": 53.5,
-    "jumlah_obstacle": 12
-  },
-  {
-    "waktu_s": 300.0,
-    "jarak_tempuh_m": 62.65,
-    "tabrakan": 0,
-    "langkah_kontak": 0,
-    "clearance_min_m": 0.024,
-    "coverage_persen": 53.6,
-    "jumlah_obstacle": 12
-  },
-  {
-    "waktu_s": 300.0,
-    "jarak_tempuh_m": 63.49,
-    "tabrakan": 0,
-    "langkah_kontak": 0,
-    "clearance_min_m": 0.027,
-    "coverage_persen": 55.9,
-    "jumlah_obstacle": 12
-  },
-  {
-    "waktu_s": 300.0,
-    "jarak_tempuh_m": 66.14,
-    "tabrakan": 0,
-    "langkah_kontak": 0,
-    "clearance_min_m": 0.032,
-    "coverage_persen": 53.8,
-    "jumlah_obstacle": 12
-  },
-  {
-    "waktu_s": 300.0,
-    "jarak_tempuh_m": 63.74,
-    "tabrakan": 0,
-    "langkah_kontak": 0,
-    "clearance_min_m": 0.023,
-    "coverage_persen": 50.2,
-    "jumlah_obstacle": 12
-  }
-]
+  "peningkatan_persen": 42
+}
