@@ -120,7 +120,7 @@ story += [Spacer(1, 1.6 * cm), Paragraph('LAPORAN TUGAS PELATIHAN LAB B401', sub
                     'di Webots', sub), Spacer(1, 0.7 * cm)]
 fig('overview.jpg', 'Robot humanoid NAO (25 DOF) dengan Lidar 360° di atas kepala, di arena 5 × 5 m '
     'berisi 12 obstacle.', W)
-story += [Spacer(1, 0.4 * cm), Paragraph('Disusun oleh: <b>Ahnaf</b>', sub),
+story += [Spacer(1, 0.4 * cm), Paragraph('Disusun oleh: <b>Ahnaf Al Ghiffarri Ahtasyafi</b>', sub),
           Paragraph(f'Repositori: <font color="#1f3f8f"><link href="{REPO}">{REPO}</link></font>', sub),
           Paragraph('Webots R2025a · Python 3 · ROS 2 Jazzy (RViz2)', sub),
           Paragraph('November 2026', sub), PageBreak()]
@@ -450,6 +450,6 @@ def on_page(c, doc):
 
 doc = SimpleDocTemplate(OUT, pagesize=A4, leftMargin=2 * cm, rightMargin=2 * cm, topMargin=1.8 * cm,
                         bottomMargin=2 * cm, title='Laporan Robot Humanoid Obstacle Avoidance - Lab B401',
-                        author='Ahnaf')
+                        author='Ahnaf Al Ghiffarri Ahtasyafi')
 doc.build(story, onFirstPage=on_page, onLaterPages=on_page)
 print('PDF:', OUT)

@@ -189,7 +189,7 @@ axes[0].legend(fontsize=8, ncol=4, loc='lower center', bbox_to_anchor=(0.5, 1.0)
 axes[0].grid(alpha=0.3)
 i = loop.joints.index('LHipYawPitch')
 axes[1].plot(t, [f[1][i] for f in loop.frames], color='#555', lw=2, label='jalan lurus')
-axes[1].plot(t, [f[1][i] for f in left.frames], color=C_NOV, lw=2, label='belok kiri (pulsa 0.25 rad)')
+axes[1].plot(t, [f[1][i] for f in left.frames], color=C_NOV, lw=2, label='belok kiri (pinggul diputar 0.25 rad)')
 axes[1].set_ylabel('HipYawPitch (rad)')
 axes[1].set_xlabel('waktu dalam siklus (s)')
 axes[1].legend(fontsize=8)
@@ -227,38 +227,63 @@ fig.tight_layout()
 fig.savefig(os.path.join(OUT, 'corridor_concept.png'), dpi=150)
 plt.close(fig)
 
-# 8. State machine humanoid
-fig, ax = plt.subplots(figsize=(9.5, 4.3))
+# 8. State machine humanoid (sesuai Controller.decide di humanoid_avoidance.py)
+NAVY, BLUE, RED, GREEN, ORANGE, GREYC = '#0b2239', '#0b5cad', '#c8102e', '#1f9d55', '#e08a00', '#5a6472'
+fig, ax = plt.subplots(figsize=(8.6, 6.4))
 ax.axis('off')
-ax.set_xlim(0, 11)
-ax.set_ylim(0, 5)
-nodes = {'SIAP': (1.4, 2.5, '#e3e7ee'), 'JALAN': (5.5, 4.1, '#cfe8cf'), 'BERHENTI': (9.6, 4.1, '#ffe2b8'),
-         'PUTAR': (9.6, 0.9, '#cfdcf6'), 'MUNDUR': (5.5, 0.9, '#f6d0cf')}
-for k, (x, y, c) in nodes.items():
-    ax.add_patch(FancyBboxPatch((x - 0.95, y - 0.38), 1.9, 0.76, boxstyle='round,pad=0.08', fc=c, ec='k', lw=1.3))
-    ax.text(x, y, k, ha='center', va='center', fontsize=11.5, weight='bold')
+ax.set_xlim(0, 12)
+ax.set_ylim(0, 8.9)
 
 
-def arrow(p, q, text, tx, ty, rad=0.0):
-    ax.add_patch(FancyArrowPatch(p, q, arrowstyle='-|>', mutation_scale=15, lw=1.2,
-                                 connectionstyle=f'arc3,rad={rad}', color='#333'))
+def node(x, y, name, sub, edge, fill, txt=None, w=3.1, h=1.3):
+    ax.add_patch(FancyBboxPatch((x - w / 2, y - h / 2), w, h, boxstyle='round,pad=0.02,rounding_size=0.22',
+                                fc=fill, ec=edge, lw=2.2, zorder=3))
+    ax.text(x, y + 0.2, name, ha='center', va='center', fontsize=13.5, weight='bold',
+            color=txt or edge, zorder=4)
+    ax.text(x, y - 0.27, sub, ha='center', va='center', fontsize=9.2, color=txt or '#2b3440', zorder=4)
+
+
+def arrow(p, q, text=None, tx=None, ty=None, rad=0.0, color='#3a4552', ls='-', fs=9.6, tc='#1d2733'):
+    ax.add_patch(FancyArrowPatch(p, q, arrowstyle='-|>', mutation_scale=17, lw=1.6, color=color,
+                                 linestyle=ls, connectionstyle=f'arc3,rad={rad}', zorder=2))
     if text:
-        ax.text(tx, ty, text, ha='center', va='center', fontsize=7.8,
-                bbox=dict(fc='white', ec='none', alpha=0.9))
+        ax.text(tx, ty, text, ha='center', va='center', fontsize=fs, color=tc, zorder=5, linespacing=1.25,
+                bbox=dict(boxstyle='round,pad=0.25', fc='white', ec='none', alpha=0.95))
 
 
-arrow((2.2, 2.85), (4.55, 4.0), 'arah |theta| <= 35 deg\nkoridor bebas', 2.9, 3.8)
-arrow((6.45, 4.15), (8.65, 4.15), 'depan < 0.85 m\natau |theta| > 75 deg', 7.55, 4.7)
-arrow((9.6, 3.7), (9.6, 1.3), 'perlu belok', 10.35, 2.5)
-arrow((8.65, 0.95), (2.3, 2.25), 'selesai putar', 5.6, 1.85, rad=-0.12)
-arrow((2.0, 2.1), (4.55, 0.85), 'obstacle < 0.30 m', 2.75, 1.15)
-arrow((4.55, 0.65), (1.2, 2.1), 'selesai mundur', 2.2, 0.55, rad=-0.35)
-ax.text(5.5, 3.1, 'siklus lurus / belok kiri / belok kanan (2.04 s),\nkoridor diperiksa tiap siklus',
-        ha='center', fontsize=7.8, color='#1f6d3d')
-ax.text(5.5, 0.12, 'watchdog: tidak berpindah 30 s -> putar 60 deg; terjebak radius 0.5 m selama 60 s -> '
-        'mode lolos 25 s; jatuh -> BANGUN', ha='center', fontsize=7.6, color='#444')
-fig.tight_layout()
-fig.savefig(os.path.join(OUT, 'state_machine.png'), dpi=150)
+node(6.0, 4.5, 'SIAP', 'berdiri, Lidar memilih arah', NAVY, NAVY, txt='white')
+node(10.15, 7.0, 'JALAN', 'lurus / belok kiri / kanan', GREEN, '#e3f5e9')
+node(10.15, 2.0, 'BERHENTI', 'selesaikan langkah', ORANGE, '#fff1dc')
+node(1.85, 7.0, 'PUTAR', '10° 20° 40° 60° / balik', BLUE, '#e2ecf8')
+node(1.85, 2.0, 'MUNDUR', 'atau maju kecil 0.10 m', RED, '#fbe3e6')
+node(6.0, 1.55, 'BANGUN', 'berdiri lagi', GREYC, '#eef0f3', w=2.6, h=1.15)
+
+# SIAP -> JALAN, siklus jalan berulang, JALAN -> BERHENTI -> SIAP
+arrow((7.1, 5.15), (8.8, 6.35), 'arah di depan (≤ 35°)\ndan depan ≥ 0.60 m', 7.05, 6.3, color=GREEN)
+arrow((9.55, 7.67), (10.75, 7.67), None, rad=-1.9, color=GREEN)
+ax.text(9.25, 8.25, 'koridor ≥ 0.85 m →\n1 siklus lagi (2 langkah)', ha='right', va='center',
+        fontsize=9.6, color=GREEN, weight='bold', linespacing=1.25)
+arrow((10.15, 6.33), (10.15, 2.67), 'koridor < 0.85 m,\nbelokan > 75°, atau\nsonar + Lidar\nmelihat obstacle', 10.15, 4.5,
+      color=ORANGE, fs=9.2)
+arrow((8.6, 2.3), (7.15, 3.85), 'diam,\npilih lagi', 7.55, 2.85, color=ORANGE)
+
+# SIAP <-> PUTAR
+arrow((4.85, 5.0), (2.55, 6.33), 'arah menyamping /\ndi belakang, semua\nsisi lega ≥ 0.33 m', 2.65, 5.25, color=BLUE, fs=9.2)
+arrow((3.4, 7.0), (5.45, 5.17), 'selesai', 4.75, 6.25, color=BLUE)
+# SIAP <-> MUNDUR
+arrow((4.85, 4.0), (2.55, 2.67), 'obstacle < 0.30 m di\ndepan, atau tak ada\nruang untuk putar', 2.6, 3.75, color=RED, fs=9.2)
+arrow((3.4, 2.0), (5.3, 3.84), 'selesai', 4.55, 2.6, color=RED)
+# BANGUN
+arrow((6.0, 2.14), (6.0, 3.84), 'selesai', 6.55, 3.05, color=GREYC)
+ax.text(6.0, 0.62, 'jatuh (roll/pitch > 45°) dari state mana pun', ha='center', fontsize=9, color=GREYC,
+        style='italic')
+
+# watchdog
+ax.add_patch(FancyBboxPatch((0.25, -0.05), 11.5, 0.0, boxstyle='square,pad=0', fc='none', ec='none'))
+ax.text(6.0, 0.1, 'Watchdog:  macet 30 s → putar 60°    ·    terjebak di radius 0.5 m selama 60 s → mode lolos 25 s',
+        ha='center', va='center', fontsize=9.4, color=NAVY, weight='bold')
+fig.tight_layout(pad=0.3)
+fig.savefig(os.path.join(OUT, 'state_machine.png'), dpi=200)
 plt.close(fig)
 
 # 9. Ringkasan angka untuk laporan & slide

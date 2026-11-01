@@ -25,8 +25,9 @@
     <div class="sub" style="font-size:24px;letter-spacing:.3em;margin-bottom:26px">Tugas Pelatihan Lab B401</div>
     <div class="t" style="font-size:112px">Robot Humanoid<br>Obstacle Avoidance</div>
     <div class="ul" style="width:260px;margin-top:22px"></div>
-    <div class="sub" style="margin-top:28px">Lidar 360&deg; di kepala &middot; Webots &middot; ROS 2</div>
-    <div class="sub" style="margin-top:14px;font-size:20px;opacity:.75">Ahnaf</div>
+    <div class="sub" style="margin-top:28px;font-size:17px;letter-spacing:.16em">Sensor: Lidar 360&deg; &middot; Sonar &middot; IMU &middot; Gyro &middot; Accelerometer &middot; GPS &middot; FSR Kaki &middot; Kamera</div>
+    <div class="sub" style="margin-top:10px;font-size:17px;letter-spacing:.16em;opacity:.8">Webots R2025a &middot; ROS 2 &middot; RViz2</div>
+    <div class="sub" style="margin-top:30px;font-size:20px;opacity:.85">Ahnaf Al Ghiffarri Ahtasyafi</div>
   </div>
 </div>
 
@@ -82,7 +83,15 @@
       <tr><td><b>Kepala</b> (2)</td><td>HeadYaw, HeadPitch (ditahan agar Lidar datar)</td></tr>
     </table>
   </div>
-  <div class="abs ok" style="left:730px;top:470px;width:640px"><span class="tag">Kenapa sulit</span><span>Harus seimbang di tiap langkah, tidak bisa belok atau berhenti seketika.</span></div>
+  <div class="abs ok" style="left:730px;top:438px;width:640px;display:block;padding:14px 22px 12px">
+    <span class="tag">Tantangan membuat humanoid</span>
+    <table style="margin-top:10px;font-size:17px;line-height:1.3;border-collapse:collapse;width:100%">
+      <tr><td style="padding:4px 10px 4px 0;vertical-align:top;white-space:nowrap;width:86px"><b>Jatuh</b></td><td style="padding:4px 0">Motion bawaan menjatuhkan robot di detik 1.2 &rarr; gait engine sendiri, transisi halus</td></tr>
+      <tr><td style="padding:4px 10px 4px 0;vertical-align:top;white-space:nowrap;width:86px"><b>Belok</b></td><td style="padding:4px 0">Tanpa roda, belok dengan memutar pinggul sedikit tiap langkah: maks. 17&deg; per 2 langkah</td></tr>
+      <tr><td style="padding:4px 10px 4px 0;vertical-align:top;white-space:nowrap;width:86px"><b>Berhenti</b></td><td style="padding:4px 0">Tak bisa berhenti mendadak: keputusan hanya di akhir siklus &rarr; ambang jarak harus lebih jauh</td></tr>
+      <tr><td style="padding:4px 10px 4px 0;vertical-align:top;white-space:nowrap;width:86px"><b>Lengan</b></td><td style="padding:4px 0">Lengan berayun menyenggol dinding saat putar &rarr; koridor 0.5 m, ruang putar 0.33 m</td></tr>
+    </table>
+  </div>
 </div>
 
 <!-- 6 sensor -->
@@ -130,8 +139,8 @@
   <div class="abs" style="left:60px;top:170px;width:700px"><img class="fig" src="../docs/images/gait_cycle.png" style="width:700px"></div>
   <div class="abs col" style="left:790px;top:180px;width:590px">
     <div class="card" style="padding:20px 26px"><div class="small"><b>Siklus jalan.</b> Frame 51 dan 102 di Forwards50 <b>identik</b> (selisih 0 rad), sehingga frame 51&ndash;102 diulang terus: 2 langkah, 2.04 s, +0.18 m.</div></div>
-    <div class="card" style="padding:20px 26px"><div class="small"><b>Belok sambil jalan.</b> Sendi <b>HipYawPitch</b> diberi satu pulsa 0.25 rad per siklus: dibuka saat kaki terangkat, ditutup saat kaki menapak. Hasilnya +17&deg; ke kiri atau &minus;13&deg; ke kanan per siklus.</div></div>
-    <div class="warn"><span class="tag">Diuji</span><span>Pulsa 0.4&ndash;0.5 rad membuat kaki tergelincir, jadi dipilih 0.25 rad.</span></div>
+    <div class="card" style="padding:20px 26px"><div class="small"><b>Belok sambil jalan.</b> Seperti kita memutar kaki ke arah belokan: sendi putar pinggul (<b>HipYawPitch</b>) diputar sedikit, 0.25 rad (&asymp;14&deg;), saat kaki terangkat, lalu dikembalikan saat kaki menapak. Kaki mendarat menghadap arah baru: +17&deg; ke kiri atau &minus;13&deg; ke kanan tiap 2 langkah.</div></div>
+    <div class="warn"><span class="tag">Diuji</span><span>Putaran pinggul 0.4&ndash;0.5 rad membuat kaki tergelincir, jadi dipilih 0.25 rad.</span></div>
   </div>
 </div>
 
@@ -204,7 +213,7 @@
 <!-- 15 state machine -->
 <div class="slide light">
   <div class="h">State machine dan keselamatan</div><div class="ul"></div>
-  <div class="abs" style="left:50px;top:165px;width:820px"><img class="fig" src="../docs/images/state_machine.png" style="width:820px;box-shadow:none"></div>
+  <div class="abs" style="left:70px;top:160px;width:790px"><img class="fig" src="../docs/images/state_machine.png" style="width:790px;box-shadow:none"></div>
   <div class="abs card" style="left:900px;top:175px;width:480px;padding:18px 22px">
     <table class="tb xs">
       <tr><th>Aturan</th><th>Ambang</th></tr>
@@ -306,7 +315,6 @@ tools/stress_test.sh 600 acak</pre></div>
       <tr><td><code>/joint_states</code> + URDF</td><td>model humanoid bergerak</td></tr>
       <tr><td><code>/odom</code>, <code>/oa/decision</code></td><td>lintasan, koridor, state</td></tr>
     </table></div>
-    <div class="term"><div class="bar"><i></i><i></i><i></i>&nbsp;satu perintah: Webots + RViz2</div><pre style="font-size:17px">tools/rviz.sh</pre></div>
   </div>
 </div>
 

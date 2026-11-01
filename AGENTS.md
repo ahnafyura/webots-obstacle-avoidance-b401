@@ -75,6 +75,8 @@ tools/make_report.py              laporan PDF
 tools/record_ros_view.py          rekam /scan + /odom ke docs/images/ros_scan_view.png
 tools/rviz.sh                     Webots + robot_state_publisher + RViz2 sekaligus
 slides/slides.html + buat_slide.py  slide (placeholder {{...}} diisi dari stress_results.json)
+tools/make_naskah.py              naskah presentasi → docs/Naskah_Presentasi_B401.pdf (thumbnail dari PDF slide)
+LOG.md                            log kronologis tiap sesi pengerjaan
 logs/                             hasil uji (DI-.gitignore, hanya ada di laptop lokal)
 ```
 
@@ -195,6 +197,7 @@ STARTS_SET=2 tools/stress_test.sh 600 acak
 python3 tools/plot_results.py    # butuh logs/set{1,2}_{kebaruan,acak} → docs/images + docs/stress_results.json
 python3 tools/make_report.py     # → docs/Laporan_Obstacle_Avoidance_B401.pdf
 python3 slides/buat_slide.py     # → slides/Presentasi_Obstacle_Avoidance_B401.pdf
+python3 tools/make_naskah.py     # → docs/Naskah_Presentasi_B401.pdf (setelah buat_slide.py)
 
 # Generator (jalankan ulang jika world/URDF berubah)
 python3 tools/make_world.py
@@ -213,6 +216,10 @@ Jika parameter navigasi atau gait diubah, **jalankan ulang ke-4 stress test** se
 4. Angka hasil di laporan dan slide **selalu dibaca dari `docs/stress_results.json`**, jangan diketik manual.
 5. Jangan edit `.wbt` atau URDF secara manual; edit generatornya di `tools/`.
 6. Repo publik, jadi jangan commit kredensial atau data pribadi.
+7. **Slide dan naskah memakai bahasa yang familiar**, bukan istilah kode. Contoh: jangan tulis "pulsa HipYawPitch", tulis "pinggul diputar sedikit saat kaki terangkat, lalu dikembalikan". Istilah teknis boleh di bagian "Detail teknis" naskah.
+8. Sampul slide menuliskan **daftar sensor**, bukan "Lidar 360° di kepala". Slide 22 tidak memuat kotak perintah `tools/rviz.sh` (perintah cukup di naskah).
+9. Diagram state machine (`tools/plot_results.py` bagian 8) harus sesuai `decide()` di controller. Kalau logika state berubah, gambar ulang diagram dan naskah slide 15.
+10. Setiap akhir sesi, tambahkan ringkasan ke `LOG.md`.
 
 ---
 
@@ -247,4 +254,6 @@ Jika parameter navigasi atau gait diubah, **jalankan ulang ke-4 stress test** se
 - NAO adalah PROTO bawaan Webots. Yang dibuat sendiri adalah gait engine, navigasi, evaluator, bridge, dan URDF tambahan.
 - Coverage minimum masih 27.9 % (set 2, posisi awal ke-3). Kasus ini kandidat perbaikan berikutnya.
 - 3 commit lama (`9230c3c`, `c87fef8`, `f7f2e8b`/`c6f884f`) masih memuat trailer Claude. Menghapusnya butuh rewrite history + force-push repo publik, jadi **hanya lakukan dengan izin pemilik**.
-- Nama di sampul laporan dan slide hanya "Ahnaf". Tambahkan NRP atau nama lengkap jika pemilik memberikannya.
+- Nama di sampul laporan, slide, dan naskah: **Ahnaf Al Ghiffarri Ahtasyafi**.
+- Sampul slide menuliskan daftar sensor yang dipakai, **bukan** "Lidar 360° di kepala" (permintaan pemilik).
+- Naskah presentasi: `docs/Naskah_Presentasi_B401.pdf`, dibuat oleh `python3 tools/make_naskah.py` (jalankan setelah `buat_slide.py`).
