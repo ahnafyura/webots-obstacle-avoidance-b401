@@ -1,0 +1,51 @@
+{
+ "v_jump": {
+  "LHipPitch": 0.2250000000000002,
+  "LKneePitch": 0.3249999999999975,
+  "LAnklePitch": 0.10000000000000009
+ },
+ "interp_err_bound_deg": {
+  "LHipPitch": 1.0742958658702944,
+  "LKneePitch": 1.1530775627007803,
+  "LAnklePitch": 0.9668662792832643
+ },
+ "err_rms_deg": {
+  "10": {
+   "LHipPitch": 10.546530736565384,
+   "LKneePitch": 8.186265970461116,
+   "LAnklePitch": 7.790196438567072
+  },
+  "20": {
+   "LHipPitch": 7.765474901524532,
+   "LKneePitch": 6.963108487067823,
+   "LAnklePitch": 5.770602040321887
+  },
+  "40": {
+   "LHipPitch": 4.754014953792345,
+   "LKneePitch": 4.7278408330917046,
+   "LAnklePitch": 3.5800470111083955
+  },
+  "80": {
+   "LHipPitch": 2.586992446295157,
+   "LKneePitch": 2.6903191378646203,
+   "LAnklePitch": 1.9607619565539443
+  }
+ },
+ "ratelimit_dev_deg": {
+  "LKneePitch": 0.0518183029916205,
+  "RKneePitch": 0.3382972005570387,
+  "LHipPitch": 0.0
+ },
+ "stress": {
+  "runs": 32,
+  "t": 19200.0,
+  "col": 0,
+  "fall": 0,
+  "dist": 1384.3999999999996
+ },
+ "stress_modes": [
+  "kebaruan",
+  "acak",
+  "peningkatan_persen"
+ ]
+}

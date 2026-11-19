@@ -96,3 +96,7 @@ docs/  slides/                         laporan PDF, slide PDF, gambar
 ```
 
 Versi sebelumnya (robot beroda differential drive) tersimpan di tag [`v1-robot-roda`](../../tree/v1-robot-roda).
+
+## Paper
+
+Analisis matematis kendali sendi NAO di Webots ada di folder `paper/`. File `Paper-Joint-Control-NAO-Webots.pdf` adalah naskahnya dan `paper.tex` adalah sumber LaTeX. Skrip `analisis.py`, `analisis2.py`, `analisis3.py`, dan `figuras.py` mereproduksi semua angka dan gambar. Jalankan dari dalam folder `paper/` setelah memasang numpy, scipy, dan matplotlib.
