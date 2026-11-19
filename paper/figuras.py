@@ -71,51 +71,51 @@ import matplotlib.patches as mp
 def fmt(v): 
     t=[('0' if abs(x)<1e-6 else ('%.2f'%x).rstrip('0').rstrip('.')) for x in v]; return '('+','.join(t)+')'
 def chain_diagram(ax):
-    ax.set_xlim(0,10);ax.set_ylim(0,len(rows_)+1.2);ax.axis('off')
-    hdr=['n','joint','role','local axis','q k=0','q k=13','limit (rad)']
-    xs=[0.1,0.65,3.2,4.1,6.0,7.1,8.2]
-    y=len(rows_)+0.55
+    ax.set_xlim(0,12.6);ax.set_ylim(0,len(rows_)+1.5);ax.axis('off')
+    hdr=['n','joint','role','local axis','q, k=0','q, k=13','limit (rad)']
+    xs=[0.1,0.85,4.0,5.3,7.7,9.0,10.4]
+    y=len(rows_)+0.8
     for x,h in zip(xs,hdr): ax.text(x,y,h,fontsize=6,fontweight='bold',va='center')
-    ax.plot([0,10],[y-0.35,y-0.35],color='k',lw=.6)
+    ax.plot([0,12.6],[y-0.35,y-0.35],color='k',lw=.6)
     for r,row in enumerate(rows_):
         yy=len(rows_)-r-0.1
         if row=='gap': 
-            ax.plot([0,10],[yy+0.45,yy+0.45],color='lightgray',lw=.5,ls=':'); continue
+            ax.plot([0,12.6],[yy+0.45,yy+0.45],color='lightgray',lw=.5,ls=':'); continue
         n,jn=row; c=ROLE[role(jn)]
-        ax.add_patch(mp.Circle((xs[0]+0.1,yy),0.28,color=c,zorder=3));ax.text(xs[0]+0.1,yy,str(n),color='w',fontsize=5.5,ha='center',va='center',fontweight='bold',zorder=4)
+        ax.scatter([xs[0]+0.25],[yy],s=95,color=c,zorder=3);ax.text(xs[0]+0.25,yy,str(n),color='w',fontsize=5.5,ha='center',va='center',fontweight='bold',zorder=4)
         ax.text(xs[1],yy,jn,fontsize=6.2,va='center');ax.text(xs[2],yy,role(jn),fontsize=6,va='center',color=c)
         ax.text(xs[3],yy,fmt(J[jn]['axis']),fontsize=5.6,va='center')
         ax.text(xs[4],yy,'%+.2f'%READY[jn],fontsize=6,va='center');ax.text(xs[5],yy,'%+.2f'%pose(13)[jn],fontsize=6,va='center')
         L=J[jn]['lim'];ax.text(xs[6],yy,'%+.2f to %+.2f'%(L['lower'],L['upper']),fontsize=5.2,va='center')
 rows_=[(N.index(j)+1,j) for j in CH['Lleg']]+['gap']+[(N.index(j)+1,j) for j in CH['Larm']]+['gap']+[(N.index(j)+1,j) for j in CH['head']]
 def side_overlay(ax):
-    for q,col,lw,lab in [(pose(0),'#aaaaaa',3.0,'ready (k=0)'),(pose(13),'#222',2.0,'swing peak (k=13)')]:
+    for q,col,lw,lab in [(pose(0),'#aaaaaa',3.0,'ready (k=0)'),(pose(13),'#222222',2.0,'swing peak (k=13)')]:
         out,ends=fk(q); pts=ends['Lleg']
         ax.plot(pts[:,0],pts[:,2],color=col,lw=lw,label=lab,zorder=2,solid_capstyle='round')
-        if col=='#222':
-            for jn,(p,R,axw) in out.items():
-                if jn[0]!='L' or 'Leg' in jn: pass
-            for jn in CH['Lleg']:
-                p=out[jn][0];n=N.index(jn)+1;c=ROLE[role(jn)]
-                ax.scatter(p[0],p[2],color=c,s=26,zorder=5)
-    # labels
-    out,_=fk(pose(13))
-    ax.text(-0.062,-0.080,'n = 1, 2, 3\nhip yaw, roll, pitch',fontsize=5.8,va='center',ha='right')
-    p=out['LKneePitch'][0];ax.annotate('n = 4  knee pitch\n$q_4$ = %+.2f rad'%pose(13)['LKneePitch'],xy=(p[0],p[2]),xytext=(p[0]+0.045,p[2]+0.045),fontsize=5.8,arrowprops=dict(arrowstyle='-',lw=.5))
-    p=out['LAnklePitch'][0];ax.annotate('n = 5, 6  ankle pitch, roll\n$q_5$ = %+.2f rad'%pose(13)['LAnklePitch'],xy=(p[0],p[2]),xytext=(p[0]+0.05,p[2]+0.03),fontsize=5.8,arrowprops=dict(arrowstyle='-',lw=.5))
-    p=out['LHipPitch'][0];ax.annotate('$q_3$ = %+.2f rad'%pose(13)['LHipPitch'],xy=(p[0],p[2]),xytext=(p[0]+0.045,p[2]-0.0),fontsize=5.8,arrowprops=dict(arrowstyle='-',lw=.5))
-    o=(-0.095,-0.285);ax.annotate('',xy=(o[0]+0.035,o[1]),xytext=o,arrowprops=dict(arrowstyle='->',lw=1));ax.annotate('',xy=(o[0],o[1]+0.035),xytext=o,arrowprops=dict(arrowstyle='->',lw=1))
-    ax.text(o[0]+0.038,o[1]-0.007,'x',fontsize=7,fontweight='bold');ax.text(o[0]-0.006,o[1]+0.038,'z',fontsize=7,fontweight='bold')
-    ax.set_xlim(-0.12,0.15);ax.set_ylim(-0.30,0.0);ax.set_aspect('equal');ax.grid(alpha=.25);ax.legend(fontsize=5.5,loc='upper right',frameon=False)
+    out,_=fk(pose(13)); q13=pose(13)
+    for jn in CH['Lleg']:
+        p=out[jn][0];c=ROLE[role(jn)];ax.scatter(p[0],p[2],color=c,s=26,zorder=5)
+    kw=dict(fontsize=5.8,va='center',ha='left',arrowprops=dict(arrowstyle='-',lw=.5,color='#555'))
+    p=out['LHipPitch'][0]
+    ax.annotate('n = 1, 2, 3, hip\nyaw, roll, pitch',xy=(p[0],p[2]),xytext=(-0.115,-0.05),**kw)
+    ax.annotate('$q_3$ = %+.2f rad'%q13['LHipPitch'],xy=(p[0],p[2]),xytext=(0.03,-0.085),**kw)
+    p=out['LKneePitch'][0]
+    ax.annotate('n = 4, knee pitch\n$q_4$ = %+.2f rad'%q13['LKneePitch'],xy=(p[0],p[2]),xytext=(0.075,-0.155),**kw)
+    p=out['LAnklePitch'][0]
+    ax.annotate('n = 5, 6, ankle\npitch, roll\n$q_5$ = %+.2f rad'%q13['LAnklePitch'],xy=(p[0],p[2]),xytext=(0.04,-0.245),**kw)
+    o=(-0.105,-0.275);ax.annotate('',xy=(o[0]+0.035,o[1]),xytext=o,arrowprops=dict(arrowstyle='->',lw=1));ax.annotate('',xy=(o[0],o[1]+0.035),xytext=o,arrowprops=dict(arrowstyle='->',lw=1))
+    ax.text(o[0]+0.04,o[1]-0.006,'x',fontsize=7,fontweight='bold');ax.text(o[0]-0.006,o[1]+0.04,'z',fontsize=7,fontweight='bold')
+    ax.set_xlim(-0.12,0.19);ax.set_ylim(-0.30,0.0);ax.set_aspect('equal');ax.grid(alpha=.25)
+    ax.legend(fontsize=5.5,loc='upper right',frameon=True,framealpha=.9,edgecolor='lightgray')
     ax.set_xlabel('x (m), forward',fontsize=6.5);ax.set_ylabel('z (m), up',fontsize=6.5);ax.tick_params(labelsize=5.5);ax.set_title('(b) left leg, side view, base frame',fontsize=7)
-fig=plt.figure(figsize=(7.2,3.3))
-g=fig.add_gridspec(1,2,width_ratios=[1.35,1],wspace=0.26)
+fig=plt.figure(figsize=(7.4,3.5))
+g=fig.add_gridspec(1,2,width_ratios=[1.7,1],wspace=0.12)
 a1=fig.add_subplot(g[0]);chain_diagram(a1);a1.set_title('(a) joint index n, role, local axis, and joint state q',fontsize=7)
 a2=fig.add_subplot(g[1]);side_overlay(a2)
 fig.legend(handles=[Line2D([0],[0],marker='o',color=c,lw=0,ms=5,label=r+' joint') for r,c in ROLE.items()],loc='lower center',ncol=3,fontsize=6.5,frameon=False) if False else None
 from matplotlib.lines import Line2D
 fig.legend(handles=[Line2D([0],[0],marker='o',color=c,lw=0,ms=5,label=r+' joint') for r,c in ROLE.items()],loc='lower left',ncol=3,fontsize=6.5,frameon=False,bbox_to_anchor=(0.03,0.0))
-plt.tight_layout(rect=(0,.05,1,1));plt.savefig('fig/f_kin3d.pdf',dpi=300);plt.close()
+fig.subplots_adjust(left=0.01,right=0.985,top=0.93,bottom=0.12);plt.savefig('fig/f_kin3d.pdf',dpi=300);plt.close()
 # state heatmap: dq_n(t)=q_n - q_ready
 Q=np.array([[dict(zip(lj,fr[1])).get(n,READY[n]) for n in N] for fr in loop.frames[:-1]]).T  # 22 x 51
 D=Q-np.array([READY[n] for n in N])[:,None]
