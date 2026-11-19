@@ -44,7 +44,7 @@ def draw(ax,q,title,state=True):
     out,ends=fk(q)
     # world frame
     for v,c,l in [((0.06,0,0),'k','x'),((0,0.06,0),'k','y'),((0,0,0.06),'k','z')]:
-        ax.plot([0,v[0]],[0,v[1]],[0,v[2]],color='k',lw=1.2); ax.text(v[0]*1.25,v[1]*1.25,v[2]*1.25,l,fontsize=7,fontweight='bold')
+        ax.plot([0,v[0]],[0,v[1]],[0,v[2]],color='k',lw=1.2); ax.text(v[0]*1.25,v[1]*1.25,v[2]*1.25,l,fontsize=7)
     # torso
     tx=[-0.05,0.05];ty=[-0.075,0.075];tz=[-0.085,0.13]
     for a in tx:
@@ -62,7 +62,7 @@ def draw(ax,q,title,state=True):
         ax.scatter(*p,color=c,s=16,zorder=5,depthshade=False)
         ax.quiver(*p,*(ax_w*0.045),color=c,lw=1.6,arrow_length_ratio=.35)
         lab=f'{n}'
-        ax.text(p[0]+0.012,p[1]+0.012,p[2]+0.008,lab,fontsize=6.5,color=c,fontweight='bold')
+        ax.text(p[0]+0.012,p[1]+0.012,p[2]+0.008,lab,fontsize=6.5,color=c)
     ax.set_xlim(-0.12,0.18);ax.set_ylim(-0.13,0.13);ax.set_zlim(-0.27,0.18)
     ax.set_box_aspect((0.3,0.26,0.45)); ax.view_init(elev=14,azim=-52)
     ax.set_xlabel('x (m)',labelpad=-6,fontsize=6);ax.set_ylabel('y (m)',labelpad=-6,fontsize=6);ax.set_zlabel('z (m)',labelpad=-6,fontsize=6)
@@ -75,14 +75,14 @@ def chain_diagram(ax):
     hdr=['n','joint','role','local axis','q, k=0','q, k=13','limit (rad)']
     xs=[0.1,0.85,4.0,5.3,7.7,9.0,10.4]
     y=len(rows_)+0.8
-    for x,h in zip(xs,hdr): ax.text(x,y,h,fontsize=6,fontweight='bold',va='center')
+    for x,h in zip(xs,hdr): ax.text(x,y,h,fontsize=6,va='center')
     ax.plot([0,12.6],[y-0.35,y-0.35],color='k',lw=.6)
     for r,row in enumerate(rows_):
         yy=len(rows_)-r-0.1
         if row=='gap': 
             ax.plot([0,12.6],[yy+0.45,yy+0.45],color='lightgray',lw=.5,ls=':'); continue
         n,jn=row; c=ROLE[role(jn)]
-        ax.scatter([xs[0]+0.25],[yy],s=95,color=c,zorder=3);ax.text(xs[0]+0.25,yy,str(n),color='w',fontsize=5.5,ha='center',va='center',fontweight='bold',zorder=4)
+        ax.scatter([xs[0]+0.25],[yy],s=95,color=c,zorder=3);ax.text(xs[0]+0.25,yy,str(n),color='w',fontsize=5.5,ha='center',va='center',zorder=4)
         ax.text(xs[1],yy,jn,fontsize=6.2,va='center');ax.text(xs[2],yy,role(jn),fontsize=6,va='center',color=c)
         ax.text(xs[3],yy,fmt(J[jn]['axis']),fontsize=5.6,va='center')
         ax.text(xs[4],yy,'%+.2f'%READY[jn],fontsize=6,va='center');ax.text(xs[5],yy,'%+.2f'%pose(13)[jn],fontsize=6,va='center')
@@ -104,7 +104,7 @@ def side_overlay(ax):
     p=out['LAnklePitch'][0]
     ax.annotate('n = 5, 6, ankle\npitch, roll\n$q_5$ = %+.2f rad'%q13['LAnklePitch'],xy=(p[0],p[2]),xytext=(0.04,-0.245),**kw)
     o=(-0.105,-0.275);ax.annotate('',xy=(o[0]+0.035,o[1]),xytext=o,arrowprops=dict(arrowstyle='->',lw=1));ax.annotate('',xy=(o[0],o[1]+0.035),xytext=o,arrowprops=dict(arrowstyle='->',lw=1))
-    ax.text(o[0]+0.04,o[1]-0.006,'x',fontsize=7,fontweight='bold');ax.text(o[0]-0.006,o[1]+0.04,'z',fontsize=7,fontweight='bold')
+    ax.text(o[0]+0.04,o[1]-0.006,'x',fontsize=7);ax.text(o[0]-0.006,o[1]+0.04,'z',fontsize=7)
     ax.set_xlim(-0.12,0.19);ax.set_ylim(-0.30,0.0);ax.set_aspect('equal');ax.grid(alpha=.25)
     ax.legend(fontsize=5.5,loc='upper right',frameon=True,framealpha=.9,edgecolor='lightgray')
     ax.set_xlabel('x (m), forward',fontsize=6.5);ax.set_ylabel('z (m), up',fontsize=6.5);ax.tick_params(labelsize=5.5);ax.set_title('(b) left leg, side view, base frame',fontsize=7)

@@ -14,6 +14,9 @@
 \fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}\fancyhead[C]{\footnotesize\thepage}\fancyfoot[C]{\footnotesize\textbf{\textcopyright\ Nov 2026 Ahnaf A.G. $\mid$ Institut Teknologi Sepuluh Nopember}\\ \href{https://github.com/ahnafyura/webots-obstacle-avoidance-b401}{\textcolor{blue}{\underline{https://github.com/ahnafyura/webots-obstacle-avoidance-b401}}}}}
 \pagestyle{plain}
 \begin{document}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt minus 1pt}
+\setlength{\itemsep}{2pt}
 
 \title{Joint Space Trajectory Generation and Servo Tracking for Humanoid NAO Locomotion in Webots}
 
@@ -23,10 +26,10 @@
 \maketitle
 \thispagestyle{plain}
 
-\noindent\textbf{\textit{Abstract.}} Humanoid locomotion in simulation is often reduced to a sequence of keyframes sent to joint motors, and the budgets that make such a sequence feasible for the servos are rarely written down. This paper treats the joint level motion generator of a NAO humanoid in Webots as a composition of four operators on a joint state trajectory and derives three design tools for it. The first is a velocity utilization index with a time scaling bound and a closed form minimum blend duration. The second is a spectral bandwidth budget, which shows that the servo bandwidth needed for an RMS tracking error $\varepsilon$ is approximately $2\dot q_{\mathrm{rms}}/\varepsilon$. The third is a turning law for a hip yaw pulse. Applied to the walking clip shipped with Webots, the analysis shows that the right knee uses 102 percent of its velocity limit, so the clip cannot be sped up, that the clip energy concentrates at the stride frequency of 0.98 Hz, that only 10 of the 22 joints move, and that about 70 to 110 rad/s of servo bandwidth keeps the knee within 2 to 3 degrees RMS. Kinematic chain, joint state tensor, and phase portrait views make the joint indices, axes, and states explicit. A planar forward kinematics model predicts the stride length within 11 percent. In an automated test of 32 runs and 5.3 hours of simulated time the resulting controller had no collisions and no falls.
+\noindent\textit{Abstract.} Humanoid locomotion in simulation is often reduced to a sequence of keyframes sent to joint motors, and the budgets that make such a sequence feasible for the servos are rarely written down. This paper treats the joint level motion generator of a NAO humanoid in Webots as a composition of four operators on a joint state trajectory and derives three design tools for it. The first is a velocity utilization index with a time scaling bound and a closed form minimum blend duration. The second is a spectral bandwidth budget, which shows that the servo bandwidth needed for an RMS tracking error $\varepsilon$ is approximately $2\dot q_{\mathrm{rms}}/\varepsilon$. The third is a turning law for a hip yaw pulse. Applied to the walking clip shipped with Webots, the analysis shows that the right knee uses 102 percent of its velocity limit, so the clip cannot be sped up, that the clip energy concentrates at the stride frequency of 0.98 Hz, that only 10 of the 22 joints move, and that about 70 to 110 rad/s of servo bandwidth keeps the knee within 2 to 3 degrees RMS. Kinematic chain, joint state tensor, and phase portrait views make the joint indices, axes, and states explicit. A planar forward kinematics model predicts the stride length within 11 percent. In an automated test of 32 runs and 5.3 hours of simulated time the resulting controller had no collisions and no falls.
 
 \vspace{2pt}
-\noindent\textbf{\textit{Index Terms.}} Humanoid robot, NAO, Webots, joint space trajectory, servo control, gait generation.
+\noindent\textit{Index Terms.} Humanoid robot, NAO, Webots, joint space trajectory, servo control, gait generation.
 
 \section{Introduction}
 Position controlled humanoids such as NAO receive a vector of joint angle targets at every control step and rely on the joint servos to reach them \cite{gouaillier2009}. A walking controller therefore reduces to a function that maps time to a joint angle vector. Two failure modes are common. The first is a discontinuity, for example when a recorded motion starts from a pose that differs from the current posture, which asks the servo for an unbounded velocity. The second is a mismatch between the frequency content of the command and the bandwidth of the servo, which produces tracking lag that shifts the center of mass.
@@ -95,7 +98,7 @@ Playing a stored clip from the current posture requires a bridge from the last t
 with $T_b=0.4$ s by default and $1.2$ s for the initial transition to the ready posture.
 
 \medskip
-\noindent\textbf{Proposition 1.} Among all twice differentiable paths $q(t)$ on $[0,T]$ with $q(0)=a$, $q(T)=b$, and $\dot q(0)=\dot q(T)=0$, the smoothstep path \eqref{eq:smooth} minimizes $\int_0^T\ddot q^{\,2}\,dt$.
+\noindent\textit{Proposition 1.} Among all twice differentiable paths $q(t)$ on $[0,T]$ with $q(0)=a$, $q(T)=b$, and $\dot q(0)=\dot q(T)=0$, the smoothstep path \eqref{eq:smooth} minimizes $\int_0^T\ddot q^{\,2}\,dt$.
 
 \medskip
 \noindent\textit{Proof.} The Euler Lagrange equation of the functional is $q^{(4)}(t)=0$, so the minimizer is a cubic polynomial. The four boundary conditions determine its four coefficients, and $a+(b-a)\sigma(t/T)$ satisfies all of them. The functional is convex, so the stationary point is the global minimum. $\square$
@@ -155,13 +158,13 @@ Let $\bar v_n$ be the velocity limit of joint $n$ and define the velocity utiliz
 \end{equation}
 
 \medskip
-\noindent\textbf{Proposition 2.} Playing a clip at the speed factor $\lambda$, that is $q_\lambda(t)=q(\lambda t)$, is velocity feasible if and only if $\lambda\le\lambda_{\max}=1/\mathrm{VUI}$.
+\noindent\textit{Proposition 2.} Playing a clip at the speed factor $\lambda$, that is $q_\lambda(t)=q(\lambda t)$, is velocity feasible if and only if $\lambda\le\lambda_{\max}=1/\mathrm{VUI}$.
 
 \medskip
 \noindent\textit{Proof.} The velocity scales as $\dot q_\lambda(t)=\lambda\dot q(\lambda t)$, so $\max_t\lvert\dot q_{\lambda,n}\rvert=\lambda\,\mathrm{VUI}_n\bar v_n$ and the constraint holds for all joints exactly when $\lambda\,\mathrm{VUI}\le1$. $\square$
 
 \medskip
-\noindent\textbf{Proposition 3.} A smoothstep blend \eqref{eq:smooth} with one shared duration $T_b$ for all joints and displacements $\Delta_n=\lvert q_{b,n}-q_{a,n}\rvert$ satisfies the velocity limits if and only if
+\noindent\textit{Proposition 3.} A smoothstep blend \eqref{eq:smooth} with one shared duration $T_b$ for all joints and displacements $\Delta_n=\lvert q_{b,n}-q_{a,n}\rvert$ satisfies the velocity limits if and only if
 \begin{equation}
 T_b\ge T_b^{*}=\max_n\frac{3\Delta_n}{2\bar v_n}.
 \label{eq:tstar}
